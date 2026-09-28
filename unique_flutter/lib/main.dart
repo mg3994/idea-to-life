@@ -8,6 +8,7 @@ import 'client.dart';
 import 'core/core.dart'
     show FlavorConfig, currentFBConfig, BootstrapErrorReporter;
 import 'screens/greetings_screen.dart';
+import 'app/app.dart';
 
 void main() async {
   final binding = WidgetsFlutterBinding.ensureInitialized()..deferFirstFrame();
@@ -33,7 +34,7 @@ void main() async {
       const BootStrap(
         binding: binding,
         errors: errors,
-        appDependencies: defaultDependencies,
+        appDependencies: appDependencies,
       ),
     ),
     errors.report,

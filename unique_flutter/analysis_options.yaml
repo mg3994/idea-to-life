@@ -38,12 +38,5 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
-
-
-plugins:
-  kaisel_lint:
-    version: ^0.5.0
-    diagnostics:
-      require_route_props: true
-      avoid_modal_route_on_main_stack: true
-      prefer_const_route_constructors: true
+  enable-experiment:
+    - augmentations 
