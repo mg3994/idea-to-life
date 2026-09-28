@@ -25,7 +25,7 @@ final class  const AppStackCodec( final AppDependencies _appDependencies,
     return switch (segments) {
       [] => _rootConfig(),
       ['onboarding'] => _onboardingConfig(),
-      ['products', final id] => _productConfig(id),
+      ['product', final id] => _productConfig(id),
       // TODO add more 
       ['settings'] => _settingsConfig(),
       ['settings', 'general'] => _generalSettingsConfig(),
@@ -151,7 +151,7 @@ final class  const AppStackCodec( final AppDependencies _appDependencies,
     if (stack.isEmpty) return Uri(path: '/');
 
     return switch (stack.last) {
-      ProductDetailRoute(:final id) => Uri(path: '/products/$id'),
+      ProductDetailRoute(:final id) => Uri(path: '/product/$id'),
       _ => Uri(path: '/'),
     };
   }

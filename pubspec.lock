@@ -880,7 +880,7 @@ packages:
     source: hosted
     version: "1.1.0"
   kaisel_lint:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: kaisel_lint
       sha256: "4281ecc8a123a3e27aebda5c09653fff92992f0bee58f8fabb62592b77ab9fae"

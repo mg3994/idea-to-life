@@ -8,4 +8,6 @@ workspace:
   - unique_client
   - unique_server
   - unique_flutter
+dependencies:
+  kaisel_lint: ^0.5.0
 
