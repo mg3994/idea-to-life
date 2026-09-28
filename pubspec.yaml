@@ -1,0 +1,11 @@
+name: _
+publish_to: none
+
+environment:
+  sdk: '^3.13.4'
+
+workspace:
+  - unique_client
+  - unique_server
+  - unique_flutter
+

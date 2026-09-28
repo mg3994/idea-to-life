@@ -1,0 +1,111 @@
+{
+  "@@locale": "en",
+  "languageName": "English",
+  "@languageName": {
+    "description": "Native display name of the language"
+  },
+  "appName": "BlogStore",
+  "@appName": {
+    "description": "The name of the application"
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Main title for the settings screen"
+  },
+  "searchSettings": "Search settings...",
+  "@searchSettings": {
+    "description": "Placeholder hint text for settings search bar"
+  },
+  "noSettingsFound": "No settings found",
+  "@noSettingsFound": {
+    "description": "Message displayed when search yields no setting categories"
+  },
+  "settingsGeneralTitle": "General",
+  "@settingsGeneralTitle": {
+    "description": "Title for general settings category"
+  },
+  "settingsGeneralSubtitle": "Profile, account details and preferences",
+  "@settingsGeneralSubtitle": {
+    "description": "Subtitle description for general settings category"
+  },
+  "settingsAppearanceTitle": "Appearance",
+  "@settingsAppearanceTitle": {
+    "description": "Title for appearance settings category"
+  },
+  "settingsAppearanceSubtitle": "Themes, accent colors, and app language",
+  "@settingsAppearanceSubtitle": {
+    "description": "Subtitle description for appearance settings category"
+  },
+  "settingsNotificationsTitle": "Notifications",
+  "@settingsNotificationsTitle": {
+    "description": "Title for notifications settings category"
+  },
+  "settingsNotificationsSubtitle": "Message alerts, push notifications, and summaries",
+  "@settingsNotificationsSubtitle": {
+    "description": "Subtitle description for notifications settings category"
+  },
+  "settingsPrivacyTitle": "Privacy & Security",
+  "@settingsPrivacyTitle": {
+    "description": "Title for privacy and security settings category"
+  },
+  "settingsPrivacySubtitle": "Data protection, active sessions, and security",
+  "@settingsPrivacySubtitle": {
+    "description": "Subtitle description for privacy and security settings category"
+  },
+  "themeModeTitle": "Theme Mode",
+  "@themeModeTitle": {
+    "description": "Title for the theme mode setting section"
+  },
+  "themeModeSubtitle": "Choose how BlogStore looks to you",
+  "@themeModeSubtitle": {
+    "description": "Subtitle description for the theme mode section"
+  },
+  "themeModeSystem": "System",
+  "@themeModeSystem": {
+    "description": "Label for system default theme mode"
+  },
+  "themeModeLight": "Light",
+  "@themeModeLight": {
+    "description": "Label for light theme mode"
+  },
+  "themeModeDark": "Dark",
+  "@themeModeDark": {
+    "description": "Label for dark theme mode"
+  },
+  "seedColorTitle": "Accent Color",
+  "@seedColorTitle": {
+    "description": "Title for accent seed color setting section"
+  },
+  "seedColorSubtitle": "Select a dynamic seed color for your theme",
+  "@seedColorSubtitle": {
+    "description": "Subtitle description for accent seed color setting"
+  },
+  "localeTitle": "Language",
+  "@localeTitle": {
+    "description": "Title for language locale setting section"
+  },
+  "localeSubtitle": "Choose your preferred application language",
+  "@localeSubtitle": {
+    "description": "Subtitle description for language locale setting"
+  },
+  "resetToDefault": "Reset to Defaults",
+  "@resetToDefault": {
+    "description": "Button label to reset appearance settings to default values"
+  },
+  "syncStatusSynced": "All changes saved",
+  "@syncStatusSynced": {
+    "description": "Status text shown when appearance settings are in sync"
+  },
+  "syncStatusPending": "Saving changes...",
+  "@syncStatusPending": {
+    "description": "Status text shown when appearance settings are syncing"
+  },
+  "syncStatusError": "Sync error",
+  "@syncStatusError": {
+    "description": "Status text shown when an error occurs during sync"
+  },
+  "syncRetry": "Retry",
+  "@syncRetry": {
+    "description": "Action button to retry sync"
+  }
+}
