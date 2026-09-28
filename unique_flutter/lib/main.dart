@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'app/di/app_dependencies.dart' show AppDependencies;
 import 'client.dart';
+import 'core/core.dart' show FlavorConfig, currentFBConfig;
 import 'screens/greetings_screen.dart';
 
 void main() async {
+  // final FlavorConfig flavorConfig = currentFBConfig;
+  final AppDependencies appDependencies = const AppDependencies(
+    // flavorConfig: flavorConfig,
+  );
+
   WidgetsFlutterBinding.ensureInitialized();
   await initializeClient();
   runApp(const MyApp());

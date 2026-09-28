@@ -7,22 +7,17 @@ import 'package:unique_flutter/core/constants/firebase_constants.dart';
 import '../../core/core.dart'
     show FlavorConfig, FlavorFirebaseOptionsX, currentFBConfig;
 
-abstract interface class FirebaseInitializer {
+abstract interface class const FirebaseInitializer() {
   Future<FirebaseApp> initialize();
 }
 
-final class DefaultFirebaseInitializer implements FirebaseInitializer {
-  const DefaultFirebaseInitializer({
-    this.flavorConfig,
-    this.options,
-  });
-
+final class const DefaultFirebaseInitializer({
   /// The active app flavor configuration.
-  final FlavorConfig? flavorConfig;
+  final FlavorConfig? flavorConfig,
 
   /// Explicit [FirebaseOptions] override.
-  final FirebaseOptions? options;
-
+  final FirebaseOptions? options,
+}) implements FirebaseInitializer {
   @override
   Future<FirebaseApp> initialize() {
     // Falls back to global currentFBConfig if flavorConfig was not explicitly injected

@@ -23,15 +23,15 @@ class AppDatabase({
   final FlavorConfig flavorConfig = currentFBConfig,
   QueryExecutor? executor,
 }) extends _$AppDatabase {
-  this : super(executor ?? _openConnection());
+  this : super(executor ?? _openConnection(flavorConfig: flavorConfig));
   // AppDatabase([QueryExecutor? executor]) : super( executor ?? _openConnection());
   @override
   int get schemaVersion => 1;
 }
 
-QueryExecutor _openConnection() {
+QueryExecutor _openConnection({FlavorConfig? flavorConfig}) {
   return driftDatabase(
-    name: 'blogstore',
+    name: '${flavorConfig?.flavor.name}_blogstore',
     native: const DriftNativeOptions(
       databaseDirectory: getApplicationSupportDirectory,
     ),

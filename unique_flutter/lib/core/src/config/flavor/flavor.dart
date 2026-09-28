@@ -8,6 +8,7 @@ class Flavor implements FlavorInterface {
   // ignore: unused_element_parameter
   const Flavor._(this.name, [this._customUrl]);
 
+  @override
   final String name;
   final String? _customUrl;
 
