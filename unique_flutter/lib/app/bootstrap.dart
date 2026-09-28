@@ -1,6 +1,8 @@
 import 'dart:async' show unawaited;
 
+import 'package:bloc_signals_flutter/bloc_signals_flutter.dart';
 import 'package:flutter/foundation.dart' show PlatformDispatcher;
+import 'package:flutter/material.dart' show Material;
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart' show Intl;
 
@@ -8,8 +10,10 @@ import '../core/core.dart'
     show
         AppDatabase,
         BootstrapErrorReporter,
-        firebaseMessagingBackgroundHandler;
+        firebaseMessagingBackgroundHandler,
+        BuildContextLocalizationExtensions;
 import 'di/app_dependencies.dart' show AppDependencies;
+import 'di/app_dependencies_provider.dart' show AppDependenciesProvider;
 part 'bootstrap_state_init.dart';
 
 final class const BootStrap({
@@ -39,8 +43,39 @@ final class _BootStrapState extends State<BootStrap> {
   @override
   Widget build(BuildContext context) {
     final router = _appRouter;
-
-    return const Placeholder();
+    if (router != null) {
+      return AppDependenciesProvider(
+        appDependencies: _appDependencies,
+        child: MultiBlocSignalProvider(
+          providers: [
+            BlocSignalProvider<AppearanceSettingsBloc>.value(
+              value: _appearanceSettingsBloc,
+            ),
+          ],
+          child: router.buildApp(context),
+        ),
+      );
+    }
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Material(
+        color: Color(0xFF121212),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 16),
+              Text(
+                // _loadingMessage, // if date time says it is night then dark logo else light
+                "Initializing unique ...",
+                // context.l10n.app_initializing,
+                style: TextStyle(color: Color(0xFFE0E0E0), fontSize: 14),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
