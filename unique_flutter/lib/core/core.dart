@@ -1,4 +1,5 @@
 export 'src/config/config.dart';
+export 'src/errors/errors.dart';
 export 'src/utils/utils.dart';
 export 'src/network/network.dart';
 export 'src/storage/storage.dart';

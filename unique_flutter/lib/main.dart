@@ -1,19 +1,43 @@
+import 'dart:async' show runZonedGuarded;
+
+import 'package:flutter/foundation.dart' show PlatformDispatcher;
 import 'package:flutter/material.dart';
 
 import 'app/di/app_dependencies.dart' show AppDependencies;
 import 'client.dart';
-import 'core/core.dart' show FlavorConfig, currentFBConfig;
+import 'core/core.dart'
+    show FlavorConfig, currentFBConfig, BootstrapErrorReporter;
 import 'screens/greetings_screen.dart';
 
 void main() async {
+  final binding = WidgetsFlutterBinding.ensureInitialized()..deferFirstFrame();
+
+  final errors = BootstrapErrorReporter();
+
+  FlutterError.onError = (details) {
+    errors.report(details.exception, details.stack ?? StackTrace.current);
+  };
+
+  PlatformDispatcher.instance.onError = (error, stackTrace) {
+    errors.report(error, stackTrace);
+    return true;
+  };
   // final FlavorConfig flavorConfig = currentFBConfig;
   final AppDependencies appDependencies = const AppDependencies(
     // flavorConfig: flavorConfig,
   );
 
-  WidgetsFlutterBinding.ensureInitialized();
   await initializeClient();
-  runApp(const MyApp());
+  runZonedGuarded(
+    () => runApp(
+      const BootStrap(
+        binding: binding,
+        errors: errors,
+        appDependencies: defaultDependencies,
+      ),
+    ),
+    errors.report,
+  );
 }
 
 /// Builds a theme for the given [brightness].
