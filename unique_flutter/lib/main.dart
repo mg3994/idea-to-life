@@ -31,7 +31,7 @@ void main() async {
   await initializeClient();
   runZonedGuarded(
     () => runApp(
-      const BootStrap(
+      BootStrap(
         binding: binding,
         errors: errors,
         appDependencies: appDependencies,
@@ -40,6 +40,8 @@ void main() async {
     errors.report,
   );
 }
+
+
 
 /// Builds a theme for the given [brightness].
 ThemeData _buildTheme(Brightness brightness) {

@@ -10,6 +10,8 @@ import 'package:firebase_messaging/firebase_messaging.dart'
         AppleNotificationSetting,
         AppleShowPreviewSetting;
 
+import '../core.dart' show FirebaseConstants;
+
 /// Gateway for push notification setup and permissions.
 abstract interface class const NotificationGateway() {
   Future<bool> isSupported();
@@ -67,10 +69,11 @@ final class const DefaultNotificationGateway({
   final FirebaseMessaging? _messaging,
 
   /// VAPID key used for web push notifications.
-  final String? vapidKey,
+  final String? _vapidKey = FirebaseConstants.vapidKey,
 
   /// Service worker script path used for web push notifications.
-  final String? serviceWorkerScriptPath,
+  final String? _serviceWorkerScriptPath =
+      FirebaseConstants.serviceWorkerScriptPath,
 }) implements NotificationGateway {
   FirebaseMessaging get _instance => _messaging ?? FirebaseMessaging.instance;
 
@@ -140,9 +143,9 @@ final class const DefaultNotificationGateway({
     return _ifSupported(
       () => _instance
           .getToken(
-            vapidKey: vapidKey ?? this.vapidKey,
+            vapidKey: vapidKey ?? _vapidKey,
             serviceWorkerScriptPath:
-                serviceWorkerScriptPath ?? this.serviceWorkerScriptPath,
+                serviceWorkerScriptPath ?? _serviceWorkerScriptPath,
           )
           .catchError((_) => null),
       null,
