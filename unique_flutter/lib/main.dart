@@ -7,7 +7,7 @@ import 'app/di/app_dependencies.dart' show AppDependencies;
 import 'client.dart';
 import 'core/core.dart' show BootstrapErrorReporter; //,FlavorConfig,
 // currentFBConfig;
-import 'screens/greetings_screen.dart';
+// import 'screens/greetings_screen.dart';
 import 'app/app.dart';
 
 void main() async {

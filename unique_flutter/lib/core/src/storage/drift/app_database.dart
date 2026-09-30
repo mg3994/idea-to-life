@@ -16,8 +16,13 @@ export 'tables/tables.dart'
 part 'app_database.g.dart';
 
 @DriftDatabase(
-  tables: [NotificationMessages, TasksTable, AppearanceSettings],
-  daos: [NotificationMsgDao, AppearanceSettingsDao],
+  tables: [
+    NotificationMessages,
+    TasksTable,
+    AppearanceSettings,
+    AppPreferences,
+  ],
+  daos: [NotificationMsgDao, AppearanceSettingsDao, AppPreferencesDao],
 )
 class AppDatabase({
   final FlavorConfig flavorConfig = currentFBConfig,

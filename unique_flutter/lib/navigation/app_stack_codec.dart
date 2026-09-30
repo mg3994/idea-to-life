@@ -1,7 +1,10 @@
 part of 'router.dart';
 
-final class  const AppStackCodec( final AppDependencies _appDependencies,
-{required final AppearanceSettingsBloc? _appSettingBloc}) implements KaiselConfigCodec<AppRoute> {
+final class const AppStackCodec({
+  required final bool isOnboardingFirstRoute,
+  required final AppearanceSettingsBloc appearanceSettingsBloc,
+  required final AppDependencies appDependencies,
+}) implements KaiselConfigCodec<AppRoute> {
   // const AppStackCodec(this._appDependencies, {this._appSettingBloc});
 
   // final AppDependencies _appDependencies;
@@ -26,7 +29,7 @@ final class  const AppStackCodec( final AppDependencies _appDependencies,
       [] => _rootConfig(),
       ['onboarding'] => _onboardingConfig(),
       ['product', final id] => _productConfig(id),
-      // TODO add more 
+      // TODO add more
       ['settings'] => _settingsConfig(),
       ['settings', 'general'] => _generalSettingsConfig(),
       ['settings', 'appearance'] => _appearanceConfig(),
@@ -37,8 +40,7 @@ final class  const AppStackCodec( final AppDependencies _appDependencies,
   }
 
   KaiselConfig<AppRoute> _rootConfig() {
-    final hasCompletedOnboarding =
-        _......stateValue.hasCompletedOnboarding ?? false;
+    final hasCompletedOnboarding = isOnboardingFirstRoute;
 
     debugPrint(
       '🔥 ROOT CONFIG → '
@@ -107,7 +109,10 @@ final class  const AppStackCodec( final AppDependencies _appDependencies,
       mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: const [SettingsMasterRoute(), NotificationsSettingRoute()],
+        activeBranchStack: const [
+          SettingsMasterRoute(),
+          NotificationsSettingRoute(),
+        ],
       ),
     );
   }
@@ -170,6 +175,7 @@ final class  const AppStackCodec( final AppDependencies _appDependencies,
     };
   }
 
+  // there should be no use of logic here this is just a configuration file find a better place
   void _applyGlobalLanguage(Uri uri) {
     final globalLanguage = uri.queryParameters['gl'];
 
@@ -187,11 +193,10 @@ final class  const AppStackCodec( final AppDependencies _appDependencies,
       return;
     }
 
-    return _appSettingBloc?.add(
+    return appearanceSettingsBloc.add(
       SetLocaleEvent(
         Locale.fromSubtags(languageCode: languageCode),
       ),
     );
-   
   }
 }
