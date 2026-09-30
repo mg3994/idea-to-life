@@ -45,10 +45,6 @@ extension DeviceScreenExtension on MediaQueryData {
   /// Does a hinge or fold bisect the screen into two distinctly usable areas?
   bool get isDualScreenDevice => verticalFold != null || horizontalFold != null;
 
-  Rect? get verticalHingeBounds => verticalFold?.bounds;
-
-  Rect? get horizontalHingeBounds => horizontalFold?.bounds;
-
   /// Gets the vertical fold (splits screen Left/Right).
   DisplayFeature? get verticalFold {
     for (final f in _foldsAndHinges) {
