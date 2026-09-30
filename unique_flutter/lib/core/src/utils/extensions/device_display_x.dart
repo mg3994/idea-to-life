@@ -1,6 +1,6 @@
 import 'dart:ui' show DisplayFeature, DisplayFeatureType, DisplayFeatureState;
 
-import 'package:flutter/material.dart' show BorderRadius, MediaQueryData;
+import 'package:flutter/material.dart' show BorderRadius, MediaQueryData, Rect;
 
 extension DeviceScreenExtension on MediaQueryData {
   // ==========================================
@@ -44,6 +44,10 @@ extension DeviceScreenExtension on MediaQueryData {
 
   /// Does a hinge or fold bisect the screen into two distinctly usable areas?
   bool get isDualScreenDevice => verticalFold != null || horizontalFold != null;
+
+  Rect? get verticalHingeBounds => verticalFold?.bounds;
+
+  Rect? get horizontalHingeBounds => horizontalFold?.bounds;
 
   /// Gets the vertical fold (splits screen Left/Right).
   DisplayFeature? get verticalFold {

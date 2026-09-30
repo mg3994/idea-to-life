@@ -1,30 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:kaisel/kaisel.dart';
+import 'package:unique_flutter/features/settings/appearance/presentation/screens/appearance_settings_screen.dart';
 
 import '../../core/core.dart'
     show DeviceScreenExtension, BuildContextLocalizationExtensions;
 import '../../navigation/router.dart'
     show
-        SettingsRoute,
-        SettingsMasterRoute,
+        AppSettingRoute,
         AppearanceSettingRoute,
-        MainShellRoute,
+        DraftDetailRoute,
+        DraftsMasterRoute,
+        DraftsRoute,
         GeneralSettingRoute,
+        HomeMasterRoute,
+        HomeRoute,
+        MainShellRoute,
         NotificationsSettingRoute,
-        PrivacySettingRoute;
-import '../features.dart' show AppearanceSettingsScreen, SettingsMasterScreen;
+        PrivacySettingRoute,
+        ProductDetailRoute,
+        SettingsMasterRoute,
+        SettingsRoute,
+        StoreDetailRoute,
+        StoreMasterRoute,
+        StoreRoute;
+import '../features.dart'
+    show
+        HomeMasterScreen,
+        ProductDetailScreen,
+        StoreMasterScreen,
+        StoreDetailScreen,
+        DraftsMasterScreen,
+        DraftDetailScreen,
+        SettingsMasterScreen,
+        AppSettingScreen;
 
-class const AppNavItem({
-  required final String Function(BuildContext) label,
-  required final IconData unselectedIcon,
-  required final IconData selectedIcon,
-});
+class AppNavItem {
+  const AppNavItem({
+    required this.label,
+    required this.unselectedIcon,
+    required this.selectedIcon,
+  });
 
-class const LazyShell({super.key}) extends StatelessWidget {
-  // Single source of truth for all navigation destinations
+  final String Function(BuildContext) label;
+  final IconData unselectedIcon;
+  final IconData selectedIcon;
+}
+
+class LazyShell extends StatelessWidget {
+  const LazyShell({super.key});
+
   List<AppNavItem> get _navItems => [
     AppNavItem(
-      //TODO: Change these as per context
       label: (context) => 'Home',
       unselectedIcon: Icons.home_outlined,
       selectedIcon: Icons.home,
@@ -51,61 +77,260 @@ class const LazyShell({super.key}) extends StatelessWidget {
     T route,
     KaiselStackContext<T> ctx,
   ) {
-    final mq = context.mq;
+    final mq = MediaQuery.of(context);
     final fold = mq.horizontalFold ?? mq.verticalFold;
     final isWide = fold != null || mq.size.width >= 700;
-    // Default to AppSettingRoute when nothing specific is selected (i.e. at SettingsMasterRoute)
+    final masterFraction = switch (mq) {
+      final mq when mq.verticalFold != null =>
+        mq.verticalFold!.bounds.left / mq.size.width,
+
+      final mq when mq.horizontalFold != null =>
+        mq.horizontalFold!.bounds.top / mq.size.height,
+
+      _ => null,
+    };
+
+    return switch (route) {
+      final HomeRoute homeRoute => _buildHomeBranch(
+        context,
+        homeRoute,
+        ctx as KaiselStackContext<HomeRoute>,
+        isWide,
+        masterFraction,
+      ),
+      final StoreRoute storeRoute => _buildStoreBranch(
+        context,
+        storeRoute,
+        ctx as KaiselStackContext<StoreRoute>,
+        isWide,
+        masterFraction,
+      ),
+      final DraftsRoute draftsRoute => _buildDraftsBranch(
+        context,
+        draftsRoute,
+        ctx as KaiselStackContext<DraftsRoute>,
+        isWide,
+        masterFraction,
+      ),
+      final SettingsRoute settingsRoute => _buildSettingsBranch(
+        context,
+        settingsRoute,
+        ctx as KaiselStackContext<SettingsRoute>,
+        isWide,
+        masterFraction,
+      ),
+      _ => throw UnimplementedError('Unhandled route: ${route.runtimeType}'),
+    };
+  }
+
+  // ===========================================================================
+  // 1. Home Branch (Two-Pane & Single-Pane)
+  // ===========================================================================
+  KaiselPageResult _buildHomeBranch(
+    BuildContext context,
+    HomeRoute route,
+    KaiselStackContext<HomeRoute> ctx,
+    bool isWide,
+    double? masterFraction,
+  ) {
     if (isWide) {
-      // agar screen size baddi ho tab default route
-      final effectiveRoutes = switch (route) {
-        SettingsRoute() when route is SettingsMasterRoute =>
-          const AppearanceSettingRoute(),
+      final effectiveRoute = route; // TODO: Add default wide route if needed
+
+      final twoPaneWidget = KaiselMasterDetailScaffold(
+        master: HomeMasterScreen(
+          selectedRoute: effectiveRoute,
+          onSelectRoute: (tileContext, targetRoute) {
+            if (effectiveRoute.runtimeType == targetRoute.runtimeType) return;
+            tileContext.pushOrReplaceTop(targetRoute);
+          },
+        ),
+        detail: switch (effectiveRoute) {
+          ProductDetailRoute(:final id) => ProductDetailScreen(id: id),
+          _ => const Center(child: Text('Select an item')),
+        },
+        masterFraction: masterFraction ?? 0.33,
+      );
+
+      return (ctx.previous is HomeMasterRoute)
+          ? KaiselAbsorbingPage(widget: twoPaneWidget)
+          : KaiselStandalonePage(twoPaneWidget);
+    }
+
+    return KaiselStandalonePage(
+      switch (route) {
+        ProductDetailRoute(:final id) => ProductDetailScreen(id: id),
+        _ => HomeMasterScreen(
+          selectedRoute: route,
+          onSelectRoute: (tileContext, targetRoute) {
+            tileContext.pushOrReplaceTop(targetRoute);
+          },
+        ),
+      },
+    );
+  }
+
+  // ===========================================================================
+  // 2. Store Branch (Two-Pane & Single-Pane)
+  // ===========================================================================
+  KaiselPageResult _buildStoreBranch(
+    BuildContext context,
+    StoreRoute route,
+    KaiselStackContext<StoreRoute> ctx,
+    bool isWide,
+    double? masterFraction,
+  ) {
+    if (isWide) {
+      final effectiveRoute = route; // TODO: Add default wide route if needed
+
+      final twoPaneWidget = KaiselMasterDetailScaffold(
+        master: StoreMasterScreen(
+          selectedRoute: effectiveRoute,
+          onSelectRoute: (tileContext, targetRoute) {
+            if (effectiveRoute.runtimeType == targetRoute.runtimeType) return;
+            tileContext.pushOrReplaceTop(targetRoute);
+          },
+        ),
+        detail: switch (effectiveRoute) {
+          StoreDetailRoute(:final id) => StoreDetailScreen(id: id),
+          _ => const Center(child: Text('Select a store item')),
+        },
+      );
+
+      return (ctx.previous is StoreMasterRoute)
+          ? KaiselAbsorbingPage(widget: twoPaneWidget)
+          : KaiselStandalonePage(twoPaneWidget);
+    }
+
+    return KaiselStandalonePage(
+      switch (route) {
+        StoreDetailRoute(:final id) => StoreDetailScreen(id: id),
+        _ => StoreMasterScreen(
+          selectedRoute: route,
+          onSelectRoute: (tileContext, targetRoute) {
+            tileContext.pushOrReplaceTop(targetRoute);
+          },
+        ),
+      },
+    );
+  }
+
+  // ===========================================================================
+  // 3. Drafts Branch (Two-Pane & Single-Pane)
+  // ===========================================================================
+  KaiselPageResult _buildDraftsBranch(
+    BuildContext context,
+    DraftsRoute route,
+    KaiselStackContext<DraftsRoute> ctx,
+    bool isWide,
+    double? masterFraction,
+  ) {
+    if (isWide) {
+      final effectiveRoute = route; // TODO: Add default wide route if needed
+
+      final twoPaneWidget = KaiselMasterDetailScaffold(
+        master: DraftsMasterScreen(
+          selectedRoute: effectiveRoute,
+          onSelectRoute: (tileContext, targetRoute) {
+            if (effectiveRoute.runtimeType == targetRoute.runtimeType) return;
+            tileContext.pushOrReplaceTop(targetRoute);
+          },
+        ),
+        detail: switch (effectiveRoute) {
+          DraftDetailRoute(:final id) => DraftDetailScreen(id: id),
+          _ => const Center(child: Text('Select a draft')),
+        },
+      );
+
+      return (ctx.previous is DraftsMasterRoute)
+          ? KaiselAbsorbingPage(widget: twoPaneWidget)
+          : KaiselStandalonePage(twoPaneWidget);
+    }
+
+    return KaiselStandalonePage(
+      switch (route) {
+        DraftDetailRoute(:final id) => DraftDetailScreen(id: id),
+        _ => DraftsMasterScreen(
+          selectedRoute: route,
+          onSelectRoute: (tileContext, targetRoute) {
+            tileContext.pushOrReplaceTop(targetRoute);
+          },
+        ),
+      },
+    );
+  }
+
+  // ===========================================================================
+  // 4. Settings Branch (Two-Pane & Single-Pane)
+  // ===========================================================================
+  KaiselPageResult _buildSettingsBranch(
+    BuildContext context,
+    SettingsRoute route,
+    KaiselStackContext<SettingsRoute> ctx,
+    bool isWide,
+    double? masterFraction,
+  ) {
+    if (isWide) {
+      final effectiveRoute = switch (route) {
+        SettingsMasterRoute() => const AppearanceSettingRoute(),
         _ => route,
       };
+
+      final twoPaneWidget = KaiselMasterDetailScaffold(
+        master: SettingsMasterScreen(
+          selectedRoute: effectiveRoute,
+          onSelectRoute: (tileContext, targetRoute) {
+            if (effectiveRoute.runtimeType == targetRoute.runtimeType) return;
+            tileContext.pushOrReplaceTop(targetRoute);
+          },
+        ),
+        detail: switch (effectiveRoute) {
+          AppearanceSettingRoute() => const AppearanceSettingsScreen(),
+          GeneralSettingRoute() => const Placeholder(),
+          NotificationsSettingRoute() => const Placeholder(),
+          PrivacySettingRoute() => const Placeholder(),
+          _ => const AppearanceSettingsScreen(),
+        },
+      );
+
+      return (ctx.previous is SettingsMasterRoute)
+          ? KaiselAbsorbingPage(widget: twoPaneWidget)
+          : KaiselStandalonePage(twoPaneWidget);
     }
-    return KaiselStandalonePage(switch (route) {
-      // TODO: Handle this case.
-      SettingsRoute() => switch <SettingsRoute>(route) {
-        GeneralSettingRoute() => GeneralSettingScreen(),
-        AppearanceSettingRoute() => AppearanceSettingsScreen(),
-        NotificationsSettingRoute() => NotificationsSettingScreen(),
-        PrivacySettingRoute() => PrivacySettingScreen(),
-        _ => SettingsMasterScreen(),
+
+    return KaiselStandalonePage(
+      switch (route) {
+        AppearanceSettingRoute() => const AppearanceSettingsScreen(),
+        GeneralSettingRoute() => const Placeholder(),
+        NotificationsSettingRoute() => const Placeholder(),
+        PrivacySettingRoute() => const Placeholder(),
+        _ => SettingsMasterScreen(
+          selectedRoute: route,
+          onSelectRoute: (tileContext, targetRoute) {
+            tileContext.pushOrReplaceTop(targetRoute);
+          },
+        ),
       },
-      // TODO: Handle this case.
-      MainShellRoute() => throw UnimplementedError(),
-    });
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = context.mq;
-    // SCENARIO 1: "Flex Mode" (Top/Bottom Split)
-    // e.g., Galaxy Z Flip resting halfway open on a table.
-    // final flipHalfOpened =
-    //     mediaQuery.isHalfOpened && mediaQuery.horizontalFold != null;
-    // SCENARIO 2: "Book Mode" (Left/Right Split, Partially Folded)
-    // e.g., Galaxy Z Fold held like a slightly bent book.
-    // final verticalFoldOpened =
-    //     mediaQuery.isHalfOpened && mediaQuery.verticalFold != null;
-    // SCENARIO 3: Flat Foldable / Dual Screen (Fully Open)
-    // e.g., Galaxy Z Fold or Surface Duo opened completely flat (Tablet Mode).
-    // final flatFoldableOpened =
-    //     mediaQuery.isFoldableFlat && mediaQuery.verticalFold != null;
-    final fold = mediaQuery.horizontalFold ?? mediaQuery.verticalFold;
-    final isWide = fold != null || mediaQuery.size.width >= 700;
+    final mq = MediaQuery.of(context);
+    final fold = mq.horizontalFold ?? mq.verticalFold;
+    final isWide = fold != null || mq.size.width >= 700;
+
     return KaiselBranchedShell.specs(
       branches: [
-        KaiselBranchSpec<SettingsRoute>.adaptive(
-          initial: const SettingsMasterRoute(),
+        KaiselBranchSpec<HomeRoute>.adaptive(
+          initial: const HomeMasterRoute(),
           builder: _buildContentRoute,
         ),
-        KaiselBranchSpec<SettingsRoute>.adaptive(
-          initial: const SettingsMasterRoute(),
+        KaiselBranchSpec<StoreRoute>.adaptive(
+          initial: const StoreMasterRoute(),
           builder: _buildContentRoute,
         ),
-        KaiselBranchSpec<SettingsRoute>.adaptive(
-          initial: const SettingsMasterRoute(),
+        KaiselBranchSpec<DraftsRoute>.adaptive(
+          initial: const DraftsMasterRoute(),
           builder: _buildContentRoute,
         ),
         KaiselBranchSpec<SettingsRoute>.adaptive(
@@ -122,7 +347,6 @@ class const LazyShell({super.key}) extends StatelessWidget {
                     onDestinationSelected: switchBranch,
                     labelType: NavigationRailLabelType.all,
                     backgroundColor: context.theme.colorScheme.surfaceContainer,
-                    // Top header icon
                     leading: Padding(
                       padding: const EdgeInsets.only(top: 16, bottom: 24),
                       child: CircleAvatar(
