@@ -12,6 +12,7 @@ import '../core/core.dart'
         BootstrapErrorReporter,
         firebaseMessagingBackgroundHandler,
         BuildContextLocalizationExtensions;
+import '../navigation/router.dart';
 import 'di/app_dependencies.dart' show AppDependencies;
 import 'di/app_dependencies_provider.dart' show AppDependenciesProvider;
 part 'bootstrap_state_init.dart';

@@ -6,11 +6,13 @@ augment final class _BootStrapState {
   late final AppDependencies _appDependencies;
   late final AppDatabase _db;
   // late final AppearanceSettingsBloc _appearanceSettingsBloc;
-  // late final AppRouter? _appRouter;
+  late final AppRouter? _appRouter;
 
   Future<void> _initAsync() async {
     _appDependencies = widget._appDependencies ?? const AppDependencies();
     _db = AppDatabase(flavorConfig: _appDependencies.flavorConfig);
+
+    
 
     if (widget.appearanceSettingsBloc != null) {
       _appearanceSettingsBloc = widget.appearanceSettingsBloc!;
