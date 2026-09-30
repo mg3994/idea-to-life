@@ -11,7 +11,9 @@ export 'tables/tables.dart'
         AppearanceSettingsDao,
         AppearanceSettingsDaoManager,
         NotificationMsgDao,
-        NotificationMsgDaoManager;
+        NotificationMsgDaoManager,
+        AppPreferencesDao,
+        AppPreferencesDaoManager;
 
 part 'app_database.g.dart';
 
@@ -70,8 +72,16 @@ class AppDatabase({
 QueryExecutor _openConnection({FlavorConfig? flavorConfig}) {
   return driftDatabase(
     name: '${flavorConfig?.flavor.name}_unique_store',
-    native: const DriftNativeOptions(
+    native: DriftNativeOptions(
       databaseDirectory: getApplicationSupportDirectory,
+      // Drift's native setup callback for SQLite configuration
+      setup: (db) {
+        // Automatically shrinks the database file on DELETE/UPDATE
+        db.execute('PRAGMA auto_vacuum = FULL;');
+
+        // Optional: Frees up OS memory when SQLite caches grow large
+        db.execute('PRAGMA journal_mode = WAL;');
+      },
     ),
     web: DriftWebOptions(
       sqlite3Wasm: Uri.parse('sqlite3.wasm'),

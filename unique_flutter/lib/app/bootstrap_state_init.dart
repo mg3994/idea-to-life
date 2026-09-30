@@ -14,6 +14,10 @@ augment final class _BootStrapState {
   Future<void> _initAsync() async {
     _appDependencies = widget._appDependencies ?? const AppDependencies();
    _db = AppDatabase(flavorConfig: _appDependencies.flavorConfig);
+   _client = Client(_appDependencies.flavorConfig.baseUrl)
+    ..connectivityMonitor = FlutterConnectivityMonitor()
+    ..authSessionManager = FlutterAuthSessionManager();
+     unawaited(_client.auth.initialize());
    // TODO: Conectivity and Internet Access Stream
    final localDatasource = AppearanceSettingsLocalDatasource(
         db: _db,
@@ -21,7 +25,7 @@ augment final class _BootStrapState {
       );
       final repository = AppearanceSettingsRepositoryImpl(
         appDependencies: _appDependencies,
-        cloudStream: const Stream.empty(),
+        cloudStream: const Stream.empty(), //TODO: MAKE it
         localStream: localDatasource.watchSettings,
         isConnectedStream: Stream.value(false),
         updateRemoteSettings: (_) async {},
@@ -44,20 +48,15 @@ _appearanceSettingsBloc = widget._appearanceSettingsBloc ?? AppearanceSettingsBl
 
       // Startup cleanup on active database connection
       await _db.notificationMsgDao.deleteExpiredMessages();
-      final locale = PlatformDispatcher.instance.locale;
+      // final locale = PlatformDispatcher.instance.locale;
+      final localeFromDB = _appearanceSettingsBloc.stateValue.locale;
+      Intl.defaultLocale = localeFromDB.toString();
+      final AppPreferencesDao appPreferences= AppPreferencesDao(_db);
+      final getAppPreferences = await appPreferences.getPreferences();
 
-      Intl.defaultLocale = 
-      // TODO: from DB
-      Locale(
-        locale.languageCode,
-        locale.countryCode,
-      ).toString();
-// Find from DB is onboarding done
-_client = Client(_appDependencies.flavorConfig.baseUrl)
-    ..connectivityMonitor = FlutterConnectivityMonitor()
-    ..authSessionManager = FlutterAuthSessionManager();
-   unawaited(_client.auth.initialize());
-      final appRouter = AppRouter(isOnboardingFirstRoute: ,
+
+  
+      final appRouter =  AppRouter(isOnboardingFirstRoute: getAppPreferences.isOnboardingDone,
        appearanceSettingsBloc: _appearanceSettingsBloc, 
        appDependencies: _appDependencies, 
        db: _db,

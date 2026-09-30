@@ -1,9 +1,12 @@
 targets:
   $default:
     sources:
+      - lib/**
+      - web/**
+      - tools/**
       - $package$
       - lib/$lib$
-      - tools/drift_worker.dart
+      - pubspec.yaml
       - "!build/**"
       - "!**/build/**"
       - "!**/generated/**"

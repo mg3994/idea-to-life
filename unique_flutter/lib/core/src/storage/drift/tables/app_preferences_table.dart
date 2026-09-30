@@ -1,5 +1,8 @@
 import 'package:drift/drift.dart';
 
+import '../app_database.dart';
+part 'app_preferences_table.g.dart';
+
 @DataClassName('AppPreference')
 class AppPreferences extends Table {
   // Single-row table constraint (ID is always 1)
@@ -8,7 +11,6 @@ class AppPreferences extends Table {
   // Onboarding & App State
   BoolColumn get isOnboardingDone =>
       boolean().withDefault(const Constant(false))();
-  TextColumn get preferredLocale => text().nullable()();
 
   // Privacy & Consent Flags
   BoolColumn get hasGivenConsent =>
