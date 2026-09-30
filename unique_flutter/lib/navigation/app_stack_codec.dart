@@ -99,7 +99,10 @@ final class const AppStackCodec({
       mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: const [SettingsMasterRoute(), AppSettingRoute()],
+        activeBranchStack: const [
+          SettingsMasterRoute(),
+          AppearanceSettingRoute(),
+        ],
       ),
     );
   }
@@ -166,7 +169,7 @@ final class const AppStackCodec({
     if (stack.isEmpty) return Uri(path: '/settings');
 
     return switch (stack.last) {
-      AppSettingRoute() => Uri(path: '/settings/appearance'),
+      AppearanceSettingRoute() => Uri(path: '/settings/appearance'),
       GeneralSettingRoute() => Uri(path: '/settings/general'),
       NotificationsSettingRoute() => Uri(path: '/settings/notifications'),
       PrivacySettingRoute() => Uri(path: '/settings/privacy'),

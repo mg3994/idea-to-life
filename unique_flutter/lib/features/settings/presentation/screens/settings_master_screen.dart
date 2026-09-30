@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart' show BuildContextLocalizationExtensions;
-import '../../../../navigation/router.dart' show SettingsRoute, GeneralSettingRoute, AppSettingRoute, NotificationsSettingRoute, PrivacySettingRoute;
-
-
+import '../../../../navigation/router.dart'
+    show
+        SettingsRoute,
+        GeneralSettingRoute,
+        NotificationsSettingRoute,
+        PrivacySettingRoute,
+        AppearanceSettingRoute;
 
 class const SettingsCategoryItemData({
   required final SettingsRoute route,
@@ -20,7 +24,7 @@ final List<SettingsCategoryItemData> kSettingsCategoryItems = [
     icon: Icons.person_outline,
   ),
   SettingsCategoryItemData(
-    route: const AppSettingRoute(),
+    route: const AppearanceSettingRoute(),
     titleBuilder: (context) => context.l10n.settingsAppearanceTitle,
     subtitleBuilder: (context) => context.l10n.settingsAppearanceSubtitle,
     icon: Icons.palette_outlined,
@@ -102,7 +106,7 @@ class _SettingsMasterScreenState extends State<SettingsMasterScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Text(
-               l10n.settingsTitle,
+                l10n.settingsTitle,
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.onSurface,
@@ -136,7 +140,7 @@ class _SettingsMasterScreenState extends State<SettingsMasterScreen> {
               child: filtered.isEmpty
                   ? Center(
                       child: Text(
-                    l10n.noSettingsFound,
+                        l10n.noSettingsFound,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                         ),

@@ -3,16 +3,18 @@ import 'package:flutter/material.dart'
     show
         BuildContext,
         MaterialLocalizations,
-        ThemeData,
-        MediaQueryData,
-        ScaffoldMessengerState,
-        Theme,
         MediaQuery,
-        ScaffoldMessenger;
+        MediaQueryData,
+        ScaffoldMessenger,
+        ScaffoldMessengerState,
+        Size,
+        Theme,
+        ThemeData;
 import 'package:kaisel/kaisel.dart' show KaiselPageScope;
 
 import '../../../../app/di/app_dependencies.dart' show AppDependencies;
-import '../../../../app/di/app_dependencies_provider.dart' show AppDependenciesProvider;
+import '../../../../app/di/app_dependencies_provider.dart'
+    show AppDependenciesProvider;
 import '../../../../l10n/l10n.dart' show AppLocalizations;
 
 extension BuildContextLocalizationExtensions on BuildContext {
@@ -30,6 +32,8 @@ extension BuildContextLocalizationExtensions on BuildContext {
 
   /// The current media query for this context.
   MediaQueryData get mq => MediaQuery.of(this);
+
+  Size get mqSize => MediaQuery.sizeOf(this);
 
   /// The current scaffoldMessenger state for this context.
   ScaffoldMessengerState get sm => ScaffoldMessenger.of(this);

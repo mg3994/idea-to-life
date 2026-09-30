@@ -6,7 +6,7 @@ augment final class _BootStrapState {
   late final AppDependencies _appDependencies;
   late final AppDatabase _db;
   late final AppearanceSettingsBloc _appearanceSettingsBloc;
-  late final AppRouter _appRouter;
+  late final AppRouter? _appRouter;
   late final   Client _client;
   
 
@@ -18,6 +18,7 @@ augment final class _BootStrapState {
     ..connectivityMonitor = FlutterConnectivityMonitor()
     ..authSessionManager = FlutterAuthSessionManager();
      unawaited(_client.auth.initialize());
+    //  _client.auth.initializeFirebaseSignIn();
    // TODO: Conectivity and Internet Access Stream
    final localDatasource = AppearanceSettingsLocalDatasource(
         db: _db,
@@ -27,7 +28,7 @@ augment final class _BootStrapState {
         appDependencies: _appDependencies,
         cloudStream: const Stream.empty(), //TODO: MAKE it
         localStream: localDatasource.watchSettings,
-        isConnectedStream: Stream.value(false),
+       isConnectedStream: _client.connectivityMonitor?.onConnectivityChanged ?? const Stream.empty(),
         updateRemoteSettings: (_) async {},
         updateLocalSettings: localDatasource.updateSettings,
       );
@@ -39,7 +40,7 @@ _appearanceSettingsBloc = widget._appearanceSettingsBloc ?? AppearanceSettingsBl
     try {
       await firebaseInitializer.initialize();
       widget.errors.attach((error, stackTrace) {
-      unawaited(crashReporter.recordError(error, stackTrace, fatal: true)); //un
+      crashReporter.recordError(error, stackTrace, fatal: true); //un
       });
       
         unawaited(notificationGateway.registerBackgroundHandler(
@@ -70,7 +71,7 @@ _appearanceSettingsBloc = widget._appearanceSettingsBloc ?? AppearanceSettingsBl
 
       await notificationGateway.requestPermission();
     } catch (error, stackTrace) {
-     unawaited(crashReporter.recordError(error, stackTrace, fatal: true)); //un
+     crashReporter.recordError(error, stackTrace, fatal: true); //un
     } finally {
       _allowFirstFrame();
     }

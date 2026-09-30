@@ -53,6 +53,8 @@ final class const ProductDetailRoute(final String id) extends HomeRoute {
   String get restorationId => 'product-$id';
 }
 
+// .....more here
+
 /// ===========================================================================
 /// Settings branch
 /// ===========================================================================
@@ -65,7 +67,7 @@ final class const SettingsMasterRoute() extends SettingsRoute;
 final class const GeneralSettingRoute() extends SettingsRoute;
 
 /// Detail pushed from [SettingsMasterRoute].
-final class const AppSettingRoute() extends SettingsRoute;
+final class const AppearanceSettingRoute() extends SettingsRoute;
 
 final class const NotificationsSettingRoute() extends SettingsRoute;
 

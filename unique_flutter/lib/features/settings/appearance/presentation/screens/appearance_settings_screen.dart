@@ -12,12 +12,17 @@ import 'widgets/widgets.dart'
         AppearanceSettingsSeedColorWidget;
 
 class const AppearanceSettingsScreen({
-  required final Color flavorDefaultColor,
-  required final AppearanceSettingsBloc appearanceSettingsBloc,
+  final Color? flavorDefaultColor,
+  final AppearanceSettingsBloc? appearanceSettingsBloc,
   super.key,
 }) extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final flavorDefaultColor =
+        this.flavorDefaultColor ??
+        context.appDependencies.flavorConfig.defaultThemeSeedColor;
+    final appearanceSettingsBloc =
+        this.appearanceSettingsBloc ?? context.read<AppearanceSettingsBloc>();
     final l10n = context.l10n;
     final theme = context.theme;
     final mq = context.mq;

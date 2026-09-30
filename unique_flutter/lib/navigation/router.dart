@@ -17,6 +17,7 @@ import '../core/core.dart'
         BuildMode,
         DeviceScreenExtension,
         Client;
+import '../features/features.dart';
 import '../features/settings/appearance/presentation/bloc/appearance_settings_bloc.dart'
     show AppearanceSettingsBloc, SetLocaleEvent;
 import '../l10n/l10n.dart' show AppLocalizations;
@@ -47,7 +48,7 @@ final class const AppRouter({
         appearanceSettingsBloc: appearanceSettingsBloc,
         appDependencies: appDependencies,
       ),
-      guards: [consentGuard],
+      // guards: [consentGuard],
       observers: () => [appDependencies.analyticsGateway.observer()],
       onScreenChanged: (route) {
         debugPrint('🔥 ROUTE = ${route.routeName}');
@@ -55,8 +56,8 @@ final class const AppRouter({
           screenName: route.routeName,
         );
       },
-      pageWrapper: _pageWrapper,
-      modalBuilder: _modalBuilder,
+      // pageWrapper: _pageWrapper,
+      // modalBuilder: _modalBuilder,
       builder: _buildRoute,
     );
   }
@@ -66,61 +67,82 @@ final class const AppRouter({
     AppRoute route,
     KaiselStackContext<AppRoute> stack,
   ) {
-    final mediaQuery = MediaQuery.of(context);
-
+    final mediaQuery = context.mq;
     // SCENARIO 1: "Flex Mode" (Top/Bottom Split)
     // e.g., Galaxy Z Flip resting halfway open on a table.
-    if (mediaQuery.isHalfOpened && mediaQuery.horizontalFold != null) {
-      return KaiselPageResult(
-        // Example: Put the main route content on top, and auxiliary controls on bottom
-        child: FlexModeLayout(
-          topHalf: _getRouteWidget(route),
-          bottomHalf: _getAuxiliaryWidget(route),
-          foldBounds: mediaQuery.horizontalFold!.bounds,
-        ),
-      );
-    }
-
+    // final flipHalfOpened =
+    //     mediaQuery.isHalfOpened && mediaQuery.horizontalFold != null;
     // SCENARIO 2: "Book Mode" (Left/Right Split, Partially Folded)
     // e.g., Galaxy Z Fold held like a slightly bent book.
-    if (mediaQuery.isHalfOpened && mediaQuery.verticalFold != null) {
-      return KaiselPageResult(
-        // Example: Render two pages side-by-side, avoiding the hinge
-        child: BookModeLayout(
-          leftSide: _getRouteWidget(route),
-          rightSide: _getSecondaryRouteWidget(stack),
-          foldBounds: mediaQuery.verticalFold!.bounds,
-        ),
-      );
-    }
-
+    // final verticalFoldOpened =
+    //     mediaQuery.isHalfOpened && mediaQuery.verticalFold != null;
     // SCENARIO 3: Flat Foldable / Dual Screen (Fully Open)
     // e.g., Galaxy Z Fold or Surface Duo opened completely flat (Tablet Mode).
-    if (mediaQuery.isFoldableFlat && mediaQuery.verticalFold != null) {
-      return KaiselPageResult(
-        // Ideal for Master-Detail navigation (e.g., List on Left, Detail on Right)
-        child: MasterDetailLayout(
-          masterRoute: _getRouteWidget(route),
-          detailRoute: stack.hasPrevious
-              ? _getRouteWidget(stack.previous!)
-              : null,
-        ),
-      );
-    }
+    // final flatFoldableOpened =
+    //     mediaQuery.isFoldableFlat && mediaQuery.verticalFold != null;
+    final fold = mediaQuery.horizontalFold ?? mediaQuery.verticalFold;
+    final isWide = fold != null || mediaQuery.size.width >= 700;
 
-    // SCENARIO 4: Standard Screen (Slab Phone or single screen active)
-    // Fallback for 95% of devices.
-    return KaiselPageResult(
-      // We let SafeArea handle the cutouts and corner radii internally on the standard page.
-      child: StandardRouteWrapper(
-        hasCutouts: mediaQuery.hasCutouts,
-        child: _getRouteWidget(route),
-      ),
-    );
+    // if (flipHalfOpened) {
+    //   return KaiselPageResult(
+    //     // Example: Put the main route content on top, and auxiliary controls on bottom
+    //     child: FlexModeLayout(
+    //       topHalf: _getRouteWidget(route),
+    //       bottomHalf: _getAuxiliaryWidget(route),
+    //       foldBounds: mediaQuery.horizontalFold!.bounds,
+    //     ),
+    //   );
+    // }
+
+    // // SCENARIO 2: "Book Mode" (Left/Right Split, Partially Folded)
+    // // e.g., Galaxy Z Fold held like a slightly bent book.
+    // if (mediaQuery.isHalfOpened && mediaQuery.verticalFold != null) {
+    //   return KaiselPageResult(
+    //     // Example: Render two pages side-by-side, avoiding the hinge
+    //     child: BookModeLayout(
+    //       leftSide: _getRouteWidget(route),
+    //       rightSide: _getSecondaryRouteWidget(stack),
+    //       foldBounds: mediaQuery.verticalFold!.bounds,
+    //     ),
+    //   );
+    // }
+
+    // // SCENARIO 3: Flat Foldable / Dual Screen (Fully Open)
+    // // e.g., Galaxy Z Fold or Surface Duo opened completely flat (Tablet Mode).
+    // if (mediaQuery.isFoldableFlat && mediaQuery.verticalFold != null) {
+    //   return KaiselPageResult(
+    //     // Ideal for Master-Detail navigation (e.g., List on Left, Detail on Right)
+    //     child: MasterDetailLayout(
+    //       masterRoute: _getRouteWidget(route),
+    //       detailRoute: stack.hasPrevious
+    //           ? _getRouteWidget(stack.previous!)
+    //           : null,
+    //     ),
+    //   );
+    // }
+
+    // // SCENARIO 4: Standard Screen (Slab Phone or single screen active)
+    // // Fallback for 95% of devices.
+    // return KaiselPageResult(
+    //   // We let SafeArea handle the cutouts and corner radii internally on the standard page.
+    //   child: StandardRouteWrapper(
+    //     hasCutouts: mediaQuery.hasCutouts,
+    //     child: _getRouteWidget(route),
+    //   ),
+    // );
+    return switch (route) {
+      OnboardingRoute() => KaiselPageResult(),
+      MainShellRoute() => KaiselStandalonePage(LazyShell()),
+      // TODO: Handle this case.
+      ConsentModalRoute() => throw UnimplementedError(),
+      // TODO: Handle this case.
+      AuthenticationModalRoute() => throw UnimplementedError(),
+    };
   }
 
   /// Builds the top-level application widget with navigation.
   Widget buildApp(BuildContext context) {
+    //client.auth.authInfoListenable
     // buider is required unless i have used `context.value`
     return BlocSignalBuilder<AppearanceSettingsBloc, AppearanceSettingsState>(
       bloc: appearanceSettingsBloc,
@@ -146,6 +168,7 @@ final class const AppRouter({
           locale: state.locale,
           theme: AppTheme.light(seed: state.seedColor),
           darkTheme: AppTheme.dark(seed: state.seedColor),
+          scrollBehavior: AppTheme.scrollBehavior,
         );
       },
     );
