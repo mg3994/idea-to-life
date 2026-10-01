@@ -1,0 +1,203 @@
+{
+  "version": 1,
+  "installations": {
+    "generic": {
+      "petitparser": {
+        "skills": [
+          {
+            "name": "petitparser-architecting",
+            "installedAt": "2026-09-27T10:11:09.754629Z"
+          },
+          {
+            "name": "petitparser-authoring",
+            "installedAt": "2026-09-27T10:11:10.004551Z"
+          },
+          {
+            "name": "petitparser-debug",
+            "installedAt": "2026-09-27T10:11:10.271139Z"
+          },
+          {
+            "name": "petitparser-test",
+            "installedAt": "2026-09-27T10:11:10.538003Z"
+          },
+          {
+            "name": "petitparser-use",
+            "installedAt": "2026-09-27T10:11:10.754622Z"
+          }
+        ]
+      },
+      "relic": {
+        "skills": [
+          {
+            "name": "relic-app-setup",
+            "installedAt": "2026-09-27T10:11:11.004012Z"
+          },
+          {
+            "name": "relic-middleware",
+            "installedAt": "2026-09-27T10:11:11.238967Z"
+          },
+          {
+            "name": "relic-request-response",
+            "installedAt": "2026-09-27T10:11:11.472085Z"
+          },
+          {
+            "name": "relic-routing",
+            "installedAt": "2026-09-27T10:11:11.653284Z"
+          },
+          {
+            "name": "relic-shelf-migration",
+            "installedAt": "2026-09-27T10:11:11.819919Z"
+          },
+          {
+            "name": "relic-static-files",
+            "installedAt": "2026-09-27T10:11:11.988122Z"
+          },
+          {
+            "name": "relic-websockets",
+            "installedAt": "2026-09-27T10:11:12.204262Z"
+          }
+        ]
+      },
+      "serverpod": {
+        "skills": [
+          {
+            "name": "serverpod-auth",
+            "installedAt": "2026-09-27T10:11:12.504249Z"
+          },
+          {
+            "name": "serverpod-caching",
+            "installedAt": "2026-09-27T10:11:12.670987Z"
+          },
+          {
+            "name": "serverpod-configuration",
+            "installedAt": "2026-09-27T10:11:13.038132Z"
+          },
+          {
+            "name": "serverpod-database",
+            "installedAt": "2026-09-27T10:11:13.287450Z"
+          },
+          {
+            "name": "serverpod-deployment",
+            "installedAt": "2026-09-27T10:11:13.520903Z"
+          },
+          {
+            "name": "serverpod-endpoints",
+            "installedAt": "2026-09-27T10:11:13.687268Z"
+          },
+          {
+            "name": "serverpod-file-uploads",
+            "installedAt": "2026-09-27T10:11:13.837264Z"
+          },
+          {
+            "name": "serverpod-flutter-frontend",
+            "installedAt": "2026-09-27T10:11:14.020318Z"
+          },
+          {
+            "name": "serverpod-health-checks",
+            "installedAt": "2026-09-27T10:11:14.200533Z"
+          },
+          {
+            "name": "serverpod-logging",
+            "installedAt": "2026-09-27T10:11:14.354144Z"
+          },
+          {
+            "name": "serverpod-migrations",
+            "installedAt": "2026-09-27T10:11:14.554140Z"
+          },
+          {
+            "name": "serverpod-models",
+            "installedAt": "2026-09-27T10:11:14.787069Z"
+          },
+          {
+            "name": "serverpod-modules",
+            "installedAt": "2026-09-27T10:11:14.936905Z"
+          },
+          {
+            "name": "serverpod-overview",
+            "installedAt": "2026-09-27T10:11:15.103558Z"
+          },
+          {
+            "name": "serverpod-scheduling",
+            "installedAt": "2026-09-27T10:11:15.253741Z"
+          },
+          {
+            "name": "serverpod-server-events",
+            "installedAt": "2026-09-27T10:11:15.402961Z"
+          },
+          {
+            "name": "serverpod-sessions",
+            "installedAt": "2026-09-27T10:11:15.553475Z"
+          },
+          {
+            "name": "serverpod-streams",
+            "installedAt": "2026-09-27T10:11:15.687077Z"
+          },
+          {
+            "name": "serverpod-testing",
+            "installedAt": "2026-09-27T10:11:15.936633Z"
+          },
+          {
+            "name": "serverpod-upgrading",
+            "installedAt": "2026-09-27T10:11:16.103904Z"
+          },
+          {
+            "name": "serverpod-webserver",
+            "installedAt": "2026-09-27T10:11:16.369839Z"
+          }
+        ]
+      },
+      "synchronized": {
+        "skills": [
+          {
+            "name": "synchronized-lock",
+            "installedAt": "2026-09-27T10:11:16.503475Z"
+          }
+        ]
+      },
+      "flutter": {
+        "skills": [
+          {
+            "name": "flutter-add-integration-test",
+            "installedAt": "2026-09-27T10:11:16.636647Z"
+          },
+          {
+            "name": "flutter-add-widget-preview",
+            "installedAt": "2026-09-27T10:11:16.803265Z"
+          },
+          {
+            "name": "flutter-add-widget-test",
+            "installedAt": "2026-09-27T10:11:16.970095Z"
+          },
+          {
+            "name": "flutter-apply-architecture-best-practices",
+            "installedAt": "2026-09-27T10:11:17.102819Z"
+          },
+          {
+            "name": "flutter-build-responsive-layout",
+            "installedAt": "2026-09-27T10:11:17.252735Z"
+          },
+          {
+            "name": "flutter-fix-layout-issues",
+            "installedAt": "2026-09-27T10:11:17.418193Z"
+          },
+          {
+            "name": "flutter-implement-json-serialization",
+            "installedAt": "2026-09-27T10:11:17.586125Z"
+          },
+          {
+            "name": "flutter-setup-declarative-routing",
+            "installedAt": "2026-09-27T10:11:17.770131Z"
+          },
+          {
+            "name": "flutter-setup-localization",
+            "installedAt": "2026-09-27T10:11:17.903208Z"
+          },
+          {
+            "name": "flutter-use-http-package",
+            "installedAt": "2026-09-27T10:11:18.101175Z"
+          }
+        ]
+      }
+    }
+  }
+}
