@@ -12,11 +12,15 @@ class const AppearanceSettingsSeedColorWidget({
 }) extends StatelessWidget {
   List<Color> get seedColors => [
     flavorDefaultColor, // Design primary purple
-    Color(0xFF3B82F6), // Blue
-    Color(0xFF10B981), // Emerald/Green
-    Color(0xFFF59E0B), // Amber/Yellow
     Color(0xFFEF4444), // Red
     Color(0xFFEC4899), // Pink
+    Color(0xFF8B5CF6), // Violet
+    Color(0xFF6366F1), // Indigo
+
+    Color(0xFF06B6D4), // Cyan
+    Color(0xFF14B8A6), // Teal
+
+    Color(0xFF0EA5E9), // Sky
   ];
 
   @override

@@ -327,10 +327,12 @@ final class const AppStackCodec({
       return;
     }
 
-    return appearanceSettingsBloc.add(
-      SetLocaleEvent(
-        Locale.fromSubtags(languageCode: languageCode),
-      ),
-    );
+    return WidgetsBinding.instance.addPostFrameCallback((_) {
+      appearanceSettingsBloc.add(
+        SetLocaleEvent(
+          Locale.fromSubtags(languageCode: languageCode),
+        ),
+      );
+    });
   }
 }

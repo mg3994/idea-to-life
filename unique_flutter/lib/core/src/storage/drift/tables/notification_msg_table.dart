@@ -75,7 +75,8 @@ class NotificationMsgDao extends DatabaseAccessor<AppDatabase>
     return notificationMessages.sentTime.isNull() |
         notificationMessages.ttl.isNull() |
         const CustomExpression<bool>(
-          'strftime("%s", sent_time) + ttl >= strftime("%s", "now")',
+          // FIX: Changed to single quotes for SQLite string literals
+          "strftime('%s', sent_time) + ttl >= strftime('%s', 'now')",
         );
   }
 
@@ -86,7 +87,8 @@ class NotificationMsgDao extends DatabaseAccessor<AppDatabase>
               table.sentTime.isNotNull() &
               table.ttl.isNotNull() &
               const CustomExpression<bool>(
-                'strftime("%s", sent_time) + ttl < strftime("%s", "now")',
+                // FIX: Changed to single quotes for SQLite string literals
+                "strftime('%s', sent_time) + ttl < strftime('%s', 'now')",
               ),
         ))
         .go();

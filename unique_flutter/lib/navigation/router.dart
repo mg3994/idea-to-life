@@ -2,7 +2,7 @@ import 'package:bloc_signals_flutter/bloc_signals_flutter.dart'
     show BlocSignalBuilder;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
-    show BuildContext, Widget, MaterialApp, MediaQuery;
+    show BuildContext, MaterialApp, Placeholder, Widget, Colors, WidgetsBinding;
 import 'package:flutter/widgets.dart' show Locale;
 
 import 'package:kaisel/kaisel.dart';
@@ -25,7 +25,7 @@ import '../l10n/l10n.dart' show AppLocalizations;
 part 'routes.dart';
 part 'app_stack_codec.dart';
 
-final class const AppRouter({
+final class AppRouter({
   final KaiselRouterConfig<AppRoute>? _routerConfig,
   required final bool isOnboardingFirstRoute,
   required final AppearanceSettingsBloc appearanceSettingsBloc,
@@ -33,7 +33,7 @@ final class const AppRouter({
   required final AppDatabase db,
   required final Client client,
 }) {
-  KaiselRouterConfig<AppRoute> get routerConfig =>
+  late final KaiselRouterConfig<AppRoute> routerConfig =
       _routerConfig ?? _createRouterConfig();
 
   KaiselRouterConfig<AppRoute> _createRouterConfig() {
@@ -131,7 +131,11 @@ final class const AppRouter({
     //   ),
     // );
     return switch (route) {
-      OnboardingRoute() => KaiselStandalonePage(LazyShell()), //TODO:
+      OnboardingRoute() => KaiselStandalonePage(
+        Placeholder(
+          color: Colors.red,
+        ),
+      ), //TODO:
       MainShellRoute() => KaiselStandalonePage(LazyShell()),
       // TODO: Handle this case.
       ConsentModalRoute() => throw UnimplementedError(),

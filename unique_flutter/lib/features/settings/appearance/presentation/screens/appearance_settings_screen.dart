@@ -32,51 +32,49 @@ class const AppearanceSettingsScreen({
     // On wide screens, master & detail are visible side-by-side: disable the back button
     final showBackButton = isCompact && !isOnlyPage;
 
-    return BlocSignalProvider<AppearanceSettingsBloc>.value(
-      value: appearanceSettingsBloc,
-      child: Scaffold(
-        backgroundColor: theme.colorScheme.surfaceContainerLowest,
-        appBar: AppBar(
-          title: Text(l10n.settingsAppearanceTitle),
-          automaticallyImplyLeading: showBackButton,
-          elevation: 0,
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (!isCompact) ...[
-                  Text(
-                    l10n.settingsAppearanceTitle,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.onSurface,
-                    ),
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surfaceContainerLowest,
+      appBar: AppBar(
+        title: Text(l10n.settingsAppearanceTitle),
+        automaticallyImplyLeading: showBackButton,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        key: const PageStorageKey('appearance_settings_scroll'),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!isCompact) ...[
+                Text(
+                  l10n.settingsAppearanceTitle,
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onSurface,
                   ),
-                  const SizedBox(height: 32),
-                ],
-                const AppearanceSettingsThemeModeWidget(),
-                const SizedBox(height: 32),
-                AppearanceSettingsSeedColorWidget(
-                  flavorDefaultColor: flavorDefaultColor,
                 ),
                 const SizedBox(height: 32),
-                const AppearanceSettingsLocaleWidget(),
-                const SizedBox(height: 40),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    appearanceSettingsBloc.add(
-                      const ResetAppearanceSettingsEvent(),
-                    );
-                  },
-                  icon: const Icon(Icons.restore),
-                  label: Text(l10n.resetToDefault),
-                ),
               ],
-            ),
+              const AppearanceSettingsThemeModeWidget(),
+              const SizedBox(height: 32),
+              AppearanceSettingsSeedColorWidget(
+                flavorDefaultColor: flavorDefaultColor,
+              ),
+              const SizedBox(height: 32),
+              const AppearanceSettingsLocaleWidget(),
+              const SizedBox(height: 40),
+              FilledButton.tonalIcon(
+                onPressed: () {
+                  appearanceSettingsBloc.add(
+                    const ResetAppearanceSettingsEvent(),
+                  );
+                },
+                icon: const Icon(Icons.restore),
+                label: Text(l10n.resetToDefault),
+              ),
+            ],
           ),
         ),
       ),
