@@ -12,8 +12,10 @@ augment final class _BootStrapState {
 
 
   Future<void> _initAsync() async {
+    
     _appDependencies = widget._appDependencies ?? const AppDependencies();
    _db = AppDatabase(flavorConfig: _appDependencies.flavorConfig);
+   BlocSignalObserver.observer = AppBlocObserver(_appDependencies.analyticsGateway);
    _client = Client(_appDependencies.flavorConfig.baseUrl)
     ..connectivityMonitor = FlutterConnectivityMonitor()
     ..authSessionManager = FlutterAuthSessionManager();

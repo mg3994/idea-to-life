@@ -32,6 +32,20 @@ final class const OnboardingRoute() extends AppRoute;
 ///         └── AppSettingRoute
 /// ===========================================================================
 
+final class const BlogRoute(final String blogId) extends AppRoute {
+  @override
+  List<Object?> get props => [blogId];
+  @override
+  String get restorationId => 'blog-$blogId';
+}
+
+final class const PostRoute(final String blogId, final String postId)
+    extends AppRoute {
+  @override
+  List<Object?> get props => [blogId, postId];
+  @override
+  String get restorationId => 'post-$blogId-$postId';
+}
 // sealed
 
 final class const MainShellRoute() extends AppRoute; // this is our ShellHost
@@ -46,12 +60,6 @@ sealed class const HomeRoute() extends MainShellRoute;
 final class const HomeRoot() extends HomeRoute;
 
 /// Detail pushed from [HomeRoot].
-final class const ProductDetailRoute(final String id) extends HomeRoute {
-  @override
-  List<Object?> get props => [id];
-  @override
-  String get restorationId => 'product-$id';
-}
 
 // .....more here
 
@@ -72,3 +80,9 @@ final class const AppearanceSettingRoute() extends SettingsRoute;
 final class const NotificationsSettingRoute() extends SettingsRoute;
 
 final class const PrivacySettingRoute() extends SettingsRoute;
+
+//
+sealed class const StoresRoute() extends MainShellRoute;
+// what if products are also there in this as well the same that is home route
+
+// product categories route

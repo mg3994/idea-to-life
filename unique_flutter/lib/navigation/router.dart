@@ -137,6 +137,11 @@ final class const AppRouter({
       ConsentModalRoute() => throw UnimplementedError(),
       // TODO: Handle this case.
       AuthenticationModalRoute() => throw UnimplementedError(),
+      // TODO: Handle this case.
+      BlogRoute(:final blogId) => throw UnimplementedError(),
+
+      // TODO: Handle this case.
+      PostRoute(:final blogId, :final postId) => throw UnimplementedError(),
     };
   }
 

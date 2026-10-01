@@ -14,7 +14,7 @@ import '../core/core.dart'
         BootstrapErrorReporter,
         firebaseMessagingBackgroundHandler,
         Client,
-        FlutterConnectivityMonitor, AppPreferencesDao, ConnectivityMonitorStreamX;
+        FlutterConnectivityMonitor, AppPreferencesDao, ConnectivityMonitorStreamX, AppBlocObserver;
 import '../features/settings/appearance/presentation/bloc/appearance_settings_bloc.dart'
     show AppearanceSettingsBloc;
 import '../features/settings/settings.dart'

@@ -5,14 +5,9 @@ final class const AppStackCodec({
   required final AppearanceSettingsBloc appearanceSettingsBloc,
   required final AppDependencies appDependencies,
 }) implements KaiselConfigCodec<AppRoute> {
-  // const AppStackCodec(this._appDependencies, {this._appSettingBloc});
-
-  // final AppDependencies _appDependencies;
-  // final AppearanceSettingsBloc? _appSettingBloc;
-
   static const _homeBranch = 0;
-  // static const .. = 1;
-  // static const ... = 2;
+  static const _storesBranch = 1;
+  static const _draftsBranch = 2;
   static const _settingsBranch = 3;
 
   @override
@@ -28,7 +23,8 @@ final class const AppStackCodec({
     return switch (segments) {
       [] => _rootConfig(),
       ['onboarding'] => _onboardingConfig(),
-      ['product', final id] => _productConfig(id),
+      ['blog', final blogId] => _blogConfig(blogId),
+      ['post', final blogId, final postId] => _postConfig(blogId, postId),
       // TODO add more
       ['settings'] => _settingsConfig(),
       ['settings', 'general'] => _generalSettingsConfig(),
@@ -64,13 +60,23 @@ final class const AppStackCodec({
     );
   }
 
-  KaiselConfig<AppRoute> _productConfig(String id) {
+  KaiselConfig<AppRoute> _blogConfig(String blogId) {
     return KaiselConfig(
-      mainStack: const [MainShellRoute()],
-      nestedState: KaiselShellConfig(
-        activeBranch: _homeBranch,
-        activeBranchStack: [const HomeRoot(), ProductDetailRoute(id)],
-      ),
+      mainStack: [BlogRoute(blogId)],
+      // nestedState: KaiselShellConfig(
+      //   activeBranch: _homeBranch,
+      //   activeBranchStack: [const HomeRoot(), BlogRoute(id)],
+      // ),
+    );
+  }
+
+  KaiselConfig<AppRoute> _postConfig(String blogId, String postId) {
+    return KaiselConfig(
+      mainStack: [PostRoute(blogId, postId)],
+      // nestedState: KaiselShellConfig(
+      //   activeBranch: _homeBranch,
+      //   activeBranchStack: [const HomeRoot(), PostRoute(id)],
+      // ),
     );
   }
 
@@ -134,7 +140,10 @@ final class const AppStackCodec({
   Uri encode(KaiselConfig<AppRoute> config) {
     final uri = switch ((config.mainStack.lastOrNull, config.nestedState)) {
       (OnboardingRoute(), _) => Uri(path: '/onboarding'),
-
+      (BlogRoute(:final blogId), _) => Uri(path: '/blog/$blogId'),
+      (PostRoute(:final blogId, :final postId), _) => Uri(
+        path: '/post/$blogId/$postId',
+      ),
       (MainShellRoute(), final KaiselShellConfig shell) =>
         switch (shell.activeBranch) {
           _homeBranch => _encodeHome(shell.activeBranchStack),
@@ -159,7 +168,6 @@ final class const AppStackCodec({
     if (stack.isEmpty) return Uri(path: '/');
 
     return switch (stack.last) {
-      ProductDetailRoute(:final id) => Uri(path: '/product/$id'),
       _ => Uri(path: '/'),
     };
   }
