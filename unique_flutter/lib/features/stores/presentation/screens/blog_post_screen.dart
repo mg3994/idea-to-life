@@ -34,15 +34,25 @@ class _BlogPostScreenState extends State<BlogPostScreen> {
       final parser = SchemaLdParser();
       _parsedNode = parser.parseJsonString(widget.initialJsonLdPayload!);
     } else {
-      // Default sample payload for blogId and postId demonstration
-      final sampleJson = '''
+      final sampleJson = _generateDynamicSampleJson(
+        widget.blogId,
+        widget.postId,
+      );
+      final parser = SchemaLdParser();
+      _parsedNode = parser.parseJsonString(sampleJson);
+    }
+  }
+
+  String _generateDynamicSampleJson(String blogId, String postId) {
+    if (postId.contains('prod') || postId.contains('item')) {
+      return '''
       {
         "@context": "https://schema.org",
         "@type": "Product",
-        "@id": "${widget.blogId}:${widget.postId}",
-        "name": "Featured Listing (${widget.blogId} - ${widget.postId})",
-        "description": "Dynamic Schema.org Linked Data listing provided by store/provider ${widget.blogId}.",
-        "brand": "Provider ${widget.blogId}",
+        "@id": "$blogId:$postId",
+        "name": "Featured Product ($blogId - $postId)",
+        "description": "Dynamic Schema.org Product listing provided by vendor $blogId.",
+        "brand": "Vendor $blogId",
         "offers": {
           "@type": "Offer",
           "price": 89.99,
@@ -52,9 +62,61 @@ class _BlogPostScreenState extends State<BlogPostScreen> {
         "variants": ["Option A", "Option B", "Option C"]
       }
       ''';
-      final parser = SchemaLdParser();
-      _parsedNode = parser.parseJsonString(sampleJson);
     }
+
+    if (postId.contains('service') || postId.contains('book')) {
+      return '''
+      {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "@id": "$blogId:$postId",
+        "name": "Strategy Session ($blogId - $postId)",
+        "description": "Dedicated appointment & consultation package by $blogId.",
+        "serviceType": "Consulting",
+        "provider": "Provider $blogId",
+        "price": 120.00,
+        "priceCurrency": "USD",
+        "offers": ["Basic Session", "Premium Session"]
+      }
+      ''';
+    }
+
+    if (postId.contains('biz') || postId.contains('local')) {
+      return '''
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "@id": "$blogId:$postId",
+        "name": "Local Storefront ($blogId)",
+        "description": "Interactive local business view for $blogId.",
+        "telephone": "+1-800-555-0199",
+        "address": "789 Commerce Way, Suite 100",
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 37.7749,
+          "longitude": -122.4194
+        },
+        "openingHours": "Mo-Sa 09:00-20:00"
+      }
+      ''';
+    }
+
+    return '''
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "@id": "$blogId:$postId",
+      "headline": "Listing Headline ($blogId / $postId)",
+      "articleBody": "This article demonstrates structured content storage and rendering using Schema.org JSON-LD.",
+      "author": {
+        "@type": "Person",
+        "name": "Author $blogId"
+      },
+      "datePublished": "2025-01-01T00:00:00Z",
+      "commentCount": 5,
+      "readingTimeMinutes": 3
+    }
+    ''';
   }
 
   @override

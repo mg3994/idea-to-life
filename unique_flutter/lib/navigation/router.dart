@@ -26,6 +26,7 @@ import '../screens/cart_modal_screen.dart';
 import '../screens/consent_modal_screen.dart';
 import '../screens/info_screens.dart';
 import '../screens/location_modal_screen.dart';
+import '../features/stores/presentation/screens/blog_post_screen.dart';
 
 part 'routes.dart';
 part 'app_stack_codec.dart';
@@ -154,6 +155,10 @@ final class AppRouter({
       AboutRoute() => const KaiselStandalonePage(AboutScreen()),
       SocialsRoute() => const KaiselStandalonePage(SocialsScreen()),
       SupportRoute() => const KaiselStandalonePage(SupportScreen()),
+      BlogPostRoute(:final blogId, :final postId) => KaiselStandalonePage(
+          BlogPostScreen(blogId: blogId, postId: postId),
+        ),
+      _ => const KaiselStandalonePage(LazyShell()),
     };
   }
 
