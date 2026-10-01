@@ -131,7 +131,7 @@ final class const AppRouter({
     //   ),
     // );
     return switch (route) {
-      OnboardingRoute() => KaiselPageResult(),
+      OnboardingRoute() => KaiselStandalonePage(LazyShell()), //TODO:
       MainShellRoute() => KaiselStandalonePage(LazyShell()),
       // TODO: Handle this case.
       ConsentModalRoute() => throw UnimplementedError(),

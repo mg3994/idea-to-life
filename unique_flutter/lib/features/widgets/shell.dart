@@ -6,33 +6,20 @@ import '../../core/core.dart'
     show DeviceScreenExtension, BuildContextLocalizationExtensions;
 import '../../navigation/router.dart'
     show
-        AppSettingRoute,
         AppearanceSettingRoute,
-        DraftDetailRoute,
-        DraftsMasterRoute,
-        DraftsRoute,
         GeneralSettingRoute,
-        HomeMasterRoute,
+        HomeRoot,
         HomeRoute,
+        LabelsRoot,
         MainShellRoute,
         NotificationsSettingRoute,
         PrivacySettingRoute,
-        ProductDetailRoute,
         SettingsMasterRoute,
         SettingsRoute,
-        StoreDetailRoute,
-        StoreMasterRoute,
-        StoreRoute;
-import '../features.dart'
-    show
-        HomeMasterScreen,
-        ProductDetailScreen,
-        StoreMasterScreen,
-        StoreDetailScreen,
-        DraftsMasterScreen,
-        DraftDetailScreen,
-        SettingsMasterScreen,
-        AppSettingScreen;
+        StoresRoot,
+        StoresRoute,
+        LabelsRoute;
+import '../features.dart' show SettingsMasterScreen;
 
 class AppNavItem {
   const AppNavItem({
@@ -61,9 +48,9 @@ class LazyShell extends StatelessWidget {
       selectedIcon: Icons.storefront,
     ),
     AppNavItem(
-      label: (context) => 'Drafts',
-      unselectedIcon: Icons.edit_note_outlined,
-      selectedIcon: Icons.edit_note,
+      label: (context) => 'Labels',
+      unselectedIcon: Icons.label_outline,
+      selectedIcon: Icons.label,
     ),
     AppNavItem(
       label: (context) => 'Settings',
@@ -94,10 +81,10 @@ class LazyShell extends StatelessWidget {
         ctx as KaiselStackContext<StoresRoute>,
         isWide,
       ),
-      final DraftsRoute draftsRoute => _buildDraftsBranch(
+      final LabelsRoute labelsRoute => _buildLabelsBranch(
         context,
-        draftsRoute,
-        ctx as KaiselStackContext<DraftsRoute>,
+        labelsRoute,
+        ctx as KaiselStackContext<LabelsRoute>,
         isWide,
       ),
       final SettingsRoute settingsRoute => _buildSettingsBranch(
@@ -167,8 +154,8 @@ class LazyShell extends StatelessWidget {
   // ===========================================================================
   KaiselPageResult _buildStoreBranch(
     BuildContext context,
-    StoreRoute route,
-    KaiselStackContext<StoreRoute> ctx,
+    StoresRoute route,
+    KaiselStackContext<StoresRoute> ctx,
     bool isWide,
   ) {
     if (isWide) {
@@ -208,19 +195,19 @@ class LazyShell extends StatelessWidget {
   }
 
   // ===========================================================================
-  // 3. Drafts Branch (Two-Pane & Single-Pane)
+  // 3.Labels Branch (Two-Pane & Single-Pane)
   // ===========================================================================
-  KaiselPageResult _buildDraftsBranch(
+  KaiselPageResult _buildLabelsBranch(
     BuildContext context,
-    DraftsRoute route,
-    KaiselStackContext<DraftsRoute> ctx,
+    LabelsRoute route,
+    KaiselStackContext<LabelsRoute> ctx,
     bool isWide,
   ) {
     if (isWide) {
       final effectiveRoute = route; // TODO: Add default wide route if needed
 
       final twoPaneWidget = KaiselMasterDetailScaffold(
-        master: DraftsMasterScreen(
+        master: LabelssMasterScreen(
           selectedRoute: effectiveRoute,
           onSelectRoute: (tileContext, targetRoute) {
             if (effectiveRoute.runtimeType == targetRoute.runtimeType) return;
@@ -228,7 +215,7 @@ class LazyShell extends StatelessWidget {
           },
         ),
         detail: switch (effectiveRoute) {
-          DraftDetailRoute(:final id) => DraftDetailScreen(id: id),
+          LabelsDetailRoute(:final id) => LabelsDetailScreen(id: id),
           _ => const Center(child: Text('Select a draft')),
         },
         masterFraction: context.mq.masterFraction ?? 0.33,
@@ -241,8 +228,8 @@ class LazyShell extends StatelessWidget {
 
     return KaiselStandalonePage(
       switch (route) {
-        DraftDetailRoute(:final id) => DraftDetailScreen(id: id),
-        _ => DraftsMasterScreen(
+        LabelsDetailRoute(:final id) => LabelsDetailScreen(id: id),
+        _ => LabelsMasterScreen(
           selectedRoute: route,
           onSelectRoute: (tileContext, targetRoute) {
             tileContext.pushOrReplaceTop(targetRoute);
@@ -315,15 +302,15 @@ class LazyShell extends StatelessWidget {
     return KaiselBranchedShell.specs(
       branches: [
         KaiselBranchSpec<HomeRoute>.adaptive(
-          initial: const HomeMasterRoute(),
+          initial: const HomeRoot(),
           builder: _buildContentRoute,
         ),
         KaiselBranchSpec<StoresRoute>.adaptive(
-          initial: const StoreMasterRoute(),
+          initial: const StoresRoot(),
           builder: _buildContentRoute,
         ),
-        KaiselBranchSpec<DraftsRoute>.adaptive(
-          initial: const DraftsMasterRoute(),
+        KaiselBranchSpec<LabelsRoot>.adaptive(
+          initial: const LabelsRoot(),
           builder: _buildContentRoute,
         ),
         KaiselBranchSpec<SettingsRoute>.adaptive(
