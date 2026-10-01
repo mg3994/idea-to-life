@@ -91,11 +91,11 @@ class _SettingsMasterScreenState extends State<SettingsMasterScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final m10n = context.m10n;
-    final c10n = context.c10n;
+    // final m10n = context.m10n;
+    // final c10n = context.c10n;
     final theme = context.theme;
-    final mq = context.mq;
-    final sm = context.sm;
+    // final mq = context.mq;
+    // final sm = context.sm;
     final filtered = _getFilteredItems(context);
 
     return Scaffold(

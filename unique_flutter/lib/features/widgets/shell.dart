@@ -86,7 +86,7 @@ class LazyShell extends StatelessWidget {
         context,
         homeRoute,
         ctx as KaiselStackContext<HomeRoute>,
-        isWide
+        isWide,
       ),
       final StoresRoute storeRoute => _buildStoreBranch(
         context,
@@ -118,7 +118,6 @@ class LazyShell extends StatelessWidget {
     HomeRoute route,
     KaiselStackContext<HomeRoute> ctx,
     bool isWide,
-    
   ) {
     if (isWide) {
       final effectiveRoute = route; // TODO: Add default wide route if needed
@@ -132,7 +131,14 @@ class LazyShell extends StatelessWidget {
           },
         ),
         detail: switch (effectiveRoute) {
-          ListingDetailRoute(:final id) => ListingDetailScreen(id: id),
+          // BlogPostRoute(:final blogId, :final postId) => BlogPostScreen(
+          //   blogId,
+          //   postId,
+          // ),
+          // BlogPageRoute(:final blogId, :final pageId) => BlogPageRoute(
+          //   blogId,
+          //   pageId,
+          // ),
           _ => const Center(child: Text('Select an item')),
         },
         masterFraction: context.mq.masterFraction ?? 0.33,

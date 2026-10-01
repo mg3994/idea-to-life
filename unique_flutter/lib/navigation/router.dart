@@ -137,11 +137,19 @@ final class const AppRouter({
       ConsentModalRoute() => throw UnimplementedError(),
       // TODO: Handle this case.
       AuthenticationModalRoute() => throw UnimplementedError(),
-      // TODO: Handle this case.
-      BlogRoute(:final blogId) => throw UnimplementedError(),
 
       // TODO: Handle this case.
-      PostRoute(:final blogId, :final postId) => throw UnimplementedError(),
+      LocationModalRoute<dynamic>() => throw UnimplementedError(),
+      // TODO: Handle this case.
+      PrivacyPolicyRoute() => throw UnimplementedError(),
+      // TODO: Handle this case.
+      TermsAndConditionsRoute() => throw UnimplementedError(),
+      // TODO: Handle this case.
+      AboutRoute() => throw UnimplementedError(),
+      // TODO: Handle this case.
+      SocialsRoute() => throw UnimplementedError(),
+      // TODO: Handle this case.
+      SupportRoute() => throw UnimplementedError(),
     };
   }
 
