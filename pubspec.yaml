@@ -2,12 +2,35 @@ name: _
 publish_to: none
 
 environment:
-  sdk: '^3.13.4'
+  sdk: '>=3.11.0 <4.0.0'
 
 workspace:
   - unique_client
   - unique_server
   - unique_flutter
-dependencies:
-  kaisel_lint: ^0.5.0
 
+dependency_overrides:
+  meta: 1.17.0
+  matcher: 0.12.18
+  analyzer: 13.3.0
+  sqlparser: 0.44.5
+  serverpod: 4.1.0-beta.1
+  serverpod_flutter: 4.1.0-beta.1
+  serverpod_client: 4.1.0-beta.1
+  serverpod_database: 4.1.0-beta.1
+  serverpod_embedded_postgres: 4.1.0-beta.1
+  serverpod_cloud_storage: 4.1.0-beta.1
+  serverpod_cloud_storage_gcp: 4.1.0-beta.1
+  serverpod_cloud_storage_s3_compat: 4.1.0-beta.1
+  serverpod_logging: 0.1.0
+  serverpod_auth_idp_flutter: 4.1.0-beta.1
+  serverpod_auth_idp_client: 4.1.0-beta.1
+  serverpod_auth_idp_server: 4.1.0-beta.1
+  serverpod_auth_core_flutter: 4.1.0-beta.1
+  serverpod_auth_core_client: 4.1.0-beta.1
+  serverpod_auth_core_server: 4.1.0-beta.1
+  serverpod_serialization: 4.1.0-beta.1
+  serverpod_shared: 4.1.0-beta.1
+  serverpod_service_client: 4.1.0-beta.1
+  serverpod_test: 4.1.0-beta.1
+  serverpod_lints: 4.1.0-beta.1
