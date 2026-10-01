@@ -21,10 +21,41 @@ final class const AppStackCodec({
         .toList(growable: false);
 
     return switch (segments) {
+      //search/label/:name
+      // TODO: fix it
       [] => _rootConfig(),
       ['onboarding'] => _onboardingConfig(),
-      ['blog', final blogId] => _blogConfig(blogId),
-      ['post', final blogId, final postId] => _postConfig(blogId, postId),
+      // --- Global Search & Labels ---
+      // Pattern: /search/label/:label
+      ['search', 'label', final label] => _globalSearchLabelConfig(
+        Uri.decodeComponent(label),
+      ),
+
+      // Pattern: /search?q=query
+      ['search'] => _globalSearchConfig(
+        query: uri.queryParameters['q'],
+      ),
+
+      // Pattern: /blog/:blogId/search?q=query
+      ['blog', final blogId, 'search'] => _blogSearchConfig(
+        blogId,
+        query: uri.queryParameters['q'],
+      ),
+
+      // --- Blogger Search & Labels (Blog-Scoped) ---
+      // Pattern: /blog/:blogId/search/label/:label
+      ['blog', final blogId, 'search', 'label', final label] =>
+        _blogSearchLabelConfig(blogId, Uri.decodeComponent(label)),
+
+      ['blog', final blogId] => _blogDetailConfig(blogId),
+      ['blog', final blogId, 'post', final postId] => _postConfig(
+        blogId,
+        postId,
+      ),
+      ['blog', final blogId, 'page', final pageId] => _blogPageConfig(
+        blogId,
+        pageId,
+      ),
       // TODO add more
       ['settings'] => _settingsConfig(),
       ['settings', 'general'] => _generalSettingsConfig(),
@@ -60,23 +91,55 @@ final class const AppStackCodec({
     );
   }
 
-  KaiselConfig<AppRoute> _blogConfig(String blogId) {
+  KaiselConfig<AppRoute> _globalSearchConfig({String? query}) {
     return KaiselConfig(
-      mainStack: [BlogRoute(blogId)],
-      // nestedState: KaiselShellConfig(
-      //   activeBranch: _homeBranch,
-      //   activeBranchStack: [const HomeRoot(), BlogRoute(id)],
-      // ),
+      mainStack: [GlobalSearchRoute(query: query ?? '')],
+    );
+  }
+
+  KaiselConfig<AppRoute> _globalSearchLabelConfig(String label) {
+    return KaiselConfig(
+      mainStack: [GlobalSearchLabelRoute(label: label)],
+    );
+  }
+
+  KaiselConfig<AppRoute> _blogSearchConfig(String blogId, {String? query}) {
+    return KaiselConfig(
+      mainStack: [BlogSearchRoute(blogId: blogId, query: query ?? '')],
+    );
+  }
+
+  KaiselConfig<AppRoute> _blogSearchLabelConfig(String blogId, String label) {
+    return KaiselConfig(
+      mainStack: [BlogSearchLabelRoute(blogId: blogId, label: label)],
+    );
+  }
+
+  KaiselConfig<AppRoute> _blogDetailConfig(String blogId) {
+    return KaiselConfig(
+      mainStack: const [MainShellRoute()],
+      nestedState: KaiselShellConfig(
+        activeBranch: _homeBranch,
+        activeBranchStack: [const HomeRoot(), BlogDetailRoute(blogId)],
+      ),
     );
   }
 
   KaiselConfig<AppRoute> _postConfig(String blogId, String postId) {
     return KaiselConfig(
-      mainStack: [PostRoute(blogId, postId)],
-      // nestedState: KaiselShellConfig(
-      //   activeBranch: _homeBranch,
-      //   activeBranchStack: [const HomeRoot(), PostRoute(id)],
-      // ),
+      mainStack: [PostRoute(blogId: blogId, postId: postId)],
+    );
+  }
+
+  KaiselConfig<AppRoute> _blogPageConfig(String blogId, String pageId) {
+    return KaiselConfig(
+      mainStack: [BlogPageRoute(blogId: blogId, pageId: pageId)],
+    );
+  }
+
+  KaiselConfig<AppRoute> _blogSearchLabelConfig(String blogId, String label) {
+    return KaiselConfig(
+      mainStack: [BlogSearchLabelRoute(blogId: blogId, label: label)],
     );
   }
 
