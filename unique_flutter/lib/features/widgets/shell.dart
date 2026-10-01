@@ -72,7 +72,7 @@ class LazyShell extends StatelessWidget {
     T route,
     KaiselStackContext<T> ctx,
   ) {
-    final mq = MediaQuery.of(context);
+    final mq = context.mq;
     final fold = mq.horizontalFold ?? mq.verticalFold;
     final isWide = fold != null || mq.size.width >= 700;
 

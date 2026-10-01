@@ -90,7 +90,7 @@ augment final class _BootStrapState {
 
 
   Future<void> _initAsync() async {
-    print('🔥 BootStrap: Starting initialization...');
+    debugPrint('🔥 BootStrap: Starting initialization...');
     try {
       _appDependencies = widget._appDependencies ?? const AppDependencies();
       _db = AppDatabase(flavorConfig: _appDependencies.flavorConfig);
@@ -122,9 +122,9 @@ augment final class _BootStrapState {
       final crashReporter = _appDependencies.crashReporter;
       final notificationGateway = _appDependencies.notificationGateway;
 
-      print('🔥 BootStrap: Waiting for Firebase to initialize...');
+      debugPrint('🔥 BootStrap: Waiting for Firebase to initialize...');
       await firebaseInitializer.initialize();
-      print('🔥 BootStrap: Firebase initialized!');
+      debugPrint('🔥 BootStrap: Firebase initialized!');
 
       widget.errors.attach((error, stackTrace) {
         crashReporter.recordError(error, stackTrace, fatal: true); 
@@ -134,17 +134,17 @@ augment final class _BootStrapState {
         firebaseMessagingBackgroundHandler,
       )); 
 
-      print('🔥 BootStrap: Cleaning up database...');
+      debugPrint('🔥 BootStrap: Cleaning up database...');
       await _db.notificationMsgDao.deleteExpiredMessages();
       
       final localeFromDB = _appearanceSettingsBloc.stateValue.locale;
       Intl.defaultLocale = localeFromDB.toString();
       
-      print('🔥 BootStrap: Fetching App Preferences...');
+      debugPrint('🔥 BootStrap: Fetching App Preferences...');
       final AppPreferencesDao appPreferences = AppPreferencesDao(_db);
       final getAppPreferences = await appPreferences.getPreferences();
   
-      print('🔥 BootStrap: Creating AppRouter...');
+      debugPrint('🔥 BootStrap: Creating AppRouter...');
       final appRouter = AppRouter(
        isOnboardingFirstRoute: getAppPreferences.isOnboardingDone,
        appearanceSettingsBloc: _appearanceSettingsBloc, 
@@ -155,7 +155,7 @@ augment final class _BootStrapState {
 
       if (!mounted) return;
       
-      print('🔥 BootStrap: Initialization complete, setting state.');
+      debugPrint('🔥 BootStrap: Initialization complete, setting state.');
       setState(() {
         _appRouter = appRouter;
       });
@@ -163,8 +163,8 @@ augment final class _BootStrapState {
       await notificationGateway.requestPermission();
     } catch (error, stackTrace) {
       // PRINT THE EXACT ERROR IN THE CONSOLE
-      print('❌ BootStrap ERROR: $error');
-      print('❌ StackTrace: $stackTrace');
+      debugPrint('❌ BootStrap ERROR: $error');
+      debugPrint('❌ StackTrace: $stackTrace');
       
       // SHOW THE ERROR ON SCREEN
       if (mounted) {
@@ -172,8 +172,7 @@ augment final class _BootStrapState {
           _initializationError = error.toString();
         });
       }
-      
-      _appDependencies?.crashReporter.recordError(error, stackTrace, fatal: true); 
+       widget.errors.report(error, stackTrace);
     } finally {
       _allowFirstFrame();
     }
