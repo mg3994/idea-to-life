@@ -10,4 +10,5 @@ export 'logging/crash_reporter.dart';
 export 'notifications/notification_gateway.dart';
 export 'notifications/background_message_handler.dart';
 export 'analytics/analytics_gateway.dart';
+export 'schema_ld/schema_ld.dart';
 

@@ -1,0 +1,7 @@
+class: BlogPostPayload
+fields:
+  blogId: String
+  postId: String
+  schemaType: String
+  jsonLdPayload: String
+  overridesJson: String?

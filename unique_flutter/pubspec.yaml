@@ -18,8 +18,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '^3.13.4'
-  flutter: '^3.44.4'
+  sdk: '>=3.11.0 <4.0.0'
+  flutter: '>=3.40.0 <4.0.0'
 
 resolution: workspace
 
@@ -50,16 +50,15 @@ dependencies:
 
 dev_dependencies:
   # Used for agents to drive the app through the Dart MCP
-  build: ^4.0.11
-  build_runner: ^2.16.1
-  build_web_compilers: ^4.8.10
+  build: any
+  build_runner: any
+  build_web_compilers: any
   drift_dev: ^2.34.1+1
   flutter_driver:
     sdk: flutter
   flutter_lints: '>=3.0.0 <7.0.0'
   flutter_test:
     sdk: flutter
-  kaisel_lint: ^0.5.0
 
 dependency_overrides:
   flutter_secure_storage: ^10.0.0

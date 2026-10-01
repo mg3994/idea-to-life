@@ -21,6 +21,12 @@ import '../features/features.dart';
 import '../features/settings/appearance/presentation/bloc/appearance_settings_bloc.dart'
     show AppearanceSettingsBloc, SetLocaleEvent;
 import '../l10n/l10n.dart' show AppLocalizations;
+import '../screens/authentication_modal_screen.dart';
+import '../screens/cart_modal_screen.dart';
+import '../screens/consent_modal_screen.dart';
+import '../screens/info_screens.dart';
+import '../screens/location_modal_screen.dart';
+import '../features/stores/presentation/screens/blog_post_screen.dart';
 
 part 'routes.dart';
 part 'app_stack_codec.dart';
@@ -131,29 +137,28 @@ final class AppRouter({
     //   ),
     // );
     return switch (route) {
-      OnboardingRoute() => KaiselStandalonePage(
+      OnboardingRoute() => const KaiselStandalonePage(
         Placeholder(
           color: Colors.red,
         ),
-      ), //TODO:
-      MainShellRoute() => KaiselStandalonePage(LazyShell()),
-      // TODO: Handle this case.
-      ConsentModalRoute() => throw UnimplementedError(),
-      // TODO: Handle this case.
-      AuthenticationModalRoute() => throw UnimplementedError(),
-
-      // TODO: Handle this case.
-      LocationModalRoute<dynamic>() => throw UnimplementedError(),
-      // TODO: Handle this case.
-      PrivacyPolicyRoute() => throw UnimplementedError(),
-      // TODO: Handle this case.
-      TermsAndConditionsRoute() => throw UnimplementedError(),
-      // TODO: Handle this case.
-      AboutRoute() => throw UnimplementedError(),
-      // TODO: Handle this case.
-      SocialsRoute() => throw UnimplementedError(),
-      // TODO: Handle this case.
-      SupportRoute() => throw UnimplementedError(),
+      ),
+      MainShellRoute() => const KaiselStandalonePage(LazyShell()),
+      ConsentModalRoute() => const KaiselStandalonePage(ConsentModalScreen()),
+      AuthenticationModalRoute() =>
+        const KaiselStandalonePage(AuthenticationModalScreen()),
+      LocationModalRoute<dynamic>() =>
+        const KaiselStandalonePage(LocationModalScreen()),
+      CartModalRoute<dynamic>() => const KaiselStandalonePage(CartModalScreen()),
+      PrivacyPolicyRoute() => const KaiselStandalonePage(PrivacyPolicyScreen()),
+      TermsAndConditionsRoute() =>
+        const KaiselStandalonePage(TermsAndConditionsScreen()),
+      AboutRoute() => const KaiselStandalonePage(AboutScreen()),
+      SocialsRoute() => const KaiselStandalonePage(SocialsScreen()),
+      SupportRoute() => const KaiselStandalonePage(SupportScreen()),
+      BlogPostRoute(:final blogId, :final postId) => KaiselStandalonePage(
+          BlogPostScreen(blogId: blogId, postId: postId),
+        ),
+      _ => const KaiselStandalonePage(LazyShell()),
     };
   }
 
