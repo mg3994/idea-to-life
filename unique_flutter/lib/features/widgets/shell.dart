@@ -56,7 +56,7 @@ class LazyShell extends StatelessWidget {
       selectedIcon: Icons.home,
     ),
     AppNavItem(
-      label: (context) => 'Store',
+      label: (context) => 'Stores',
       unselectedIcon: Icons.storefront_outlined,
       selectedIcon: Icons.storefront,
     ),
@@ -80,15 +80,6 @@ class LazyShell extends StatelessWidget {
     final mq = MediaQuery.of(context);
     final fold = mq.horizontalFold ?? mq.verticalFold;
     final isWide = fold != null || mq.size.width >= 700;
-    final masterFraction = switch (mq) {
-      final mq when mq.verticalFold != null =>
-        mq.verticalFold!.bounds.left / mq.size.width,
-
-      final mq when mq.horizontalFold != null =>
-        mq.horizontalFold!.bounds.top / mq.size.height,
-
-      _ => null,
-    };
 
     return switch (route) {
       final HomeRoute homeRoute => _buildHomeBranch(
@@ -96,28 +87,24 @@ class LazyShell extends StatelessWidget {
         homeRoute,
         ctx as KaiselStackContext<HomeRoute>,
         isWide,
-        masterFraction,
       ),
       final StoreRoute storeRoute => _buildStoreBranch(
         context,
         storeRoute,
         ctx as KaiselStackContext<StoreRoute>,
         isWide,
-        masterFraction,
       ),
       final DraftsRoute draftsRoute => _buildDraftsBranch(
         context,
         draftsRoute,
         ctx as KaiselStackContext<DraftsRoute>,
         isWide,
-        masterFraction,
       ),
       final SettingsRoute settingsRoute => _buildSettingsBranch(
         context,
         settingsRoute,
         ctx as KaiselStackContext<SettingsRoute>,
         isWide,
-        masterFraction,
       ),
       _ => throw UnimplementedError('Unhandled route: ${route.runtimeType}'),
     };
@@ -148,7 +135,7 @@ class LazyShell extends StatelessWidget {
           ProductDetailRoute(:final id) => ProductDetailScreen(id: id),
           _ => const Center(child: Text('Select an item')),
         },
-        masterFraction: masterFraction ?? 0.33,
+        masterFraction: context.mq.masterFraction ?? 0.33,
       );
 
       return (ctx.previous is HomeMasterRoute)
@@ -177,7 +164,6 @@ class LazyShell extends StatelessWidget {
     StoreRoute route,
     KaiselStackContext<StoreRoute> ctx,
     bool isWide,
-    double? masterFraction,
   ) {
     if (isWide) {
       final effectiveRoute = route; // TODO: Add default wide route if needed
@@ -194,6 +180,7 @@ class LazyShell extends StatelessWidget {
           StoreDetailRoute(:final id) => StoreDetailScreen(id: id),
           _ => const Center(child: Text('Select a store item')),
         },
+        masterFraction: context.mq.masterFraction ?? 0.33,
       );
 
       return (ctx.previous is StoreMasterRoute)
@@ -222,7 +209,6 @@ class LazyShell extends StatelessWidget {
     DraftsRoute route,
     KaiselStackContext<DraftsRoute> ctx,
     bool isWide,
-    double? masterFraction,
   ) {
     if (isWide) {
       final effectiveRoute = route; // TODO: Add default wide route if needed
@@ -239,6 +225,7 @@ class LazyShell extends StatelessWidget {
           DraftDetailRoute(:final id) => DraftDetailScreen(id: id),
           _ => const Center(child: Text('Select a draft')),
         },
+        masterFraction: context.mq.masterFraction ?? 0.33,
       );
 
       return (ctx.previous is DraftsMasterRoute)
@@ -267,7 +254,6 @@ class LazyShell extends StatelessWidget {
     SettingsRoute route,
     KaiselStackContext<SettingsRoute> ctx,
     bool isWide,
-    double? masterFraction,
   ) {
     if (isWide) {
       final effectiveRoute = switch (route) {
@@ -290,6 +276,7 @@ class LazyShell extends StatelessWidget {
           PrivacySettingRoute() => const Placeholder(),
           _ => const AppearanceSettingsScreen(),
         },
+        masterFraction: context.mq.masterFraction ?? 0.33,
       );
 
       return (ctx.previous is SettingsMasterRoute)
