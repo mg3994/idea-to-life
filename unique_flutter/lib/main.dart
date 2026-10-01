@@ -28,7 +28,7 @@ void main() async {
     // flavorConfig: flavorConfig,
   );
 
-  await initializeClient();
+  // await initializeClient();
   runZonedGuarded(
     () => runApp(
       BootStrap(

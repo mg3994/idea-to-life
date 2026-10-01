@@ -2,7 +2,31 @@ import 'package:bloc_signals_flutter/bloc_signals_flutter.dart'
     show BlocSignalBuilder;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
-    show BuildContext, MaterialApp, Placeholder, Widget, Colors, WidgetsBinding;
+    show
+        BuildContext,
+        MaterialApp,
+        Placeholder,
+        Widget,
+        Colors,
+        WidgetsBinding,
+        Page,
+        Route,
+        Offset,
+        EdgeInsets,
+        Color,
+        Tween,
+        Curves,
+        CurvedAnimation,
+        SlideTransition,
+        PageRouteBuilder,
+        MaterialPage,
+        Alignment,
+        BorderRadius,
+        BoxDecoration,
+        SafeArea,
+        Container,
+        Align,
+        ColoredBox;
 import 'package:flutter/widgets.dart' show Locale;
 
 import 'package:kaisel/kaisel.dart';
@@ -56,17 +80,20 @@ final class AppRouter({
           screenName: route.routeName,
         );
       },
-      // pageWrapper: _pageWrapper,
-      // modalBuilder: _modalBuilder,
-      builder: _buildRoute,
+      pageWrapper: _pageWrapper,
+      modalBuilder: _modalBuilder,
+
+      builder: (context, route, stack) =>
+          _buildRoute(context, route, stack, client: client),
     );
   }
 
   static KaiselPageResult _buildRoute(
     BuildContext context,
     AppRoute route,
-    KaiselStackContext<AppRoute> stack,
-  ) {
+    KaiselStackContext<AppRoute> stack, {
+    required Client client,
+  }) {
     final mediaQuery = context.mq;
     // SCENARIO 1: "Flex Mode" (Top/Bottom Split)
     // e.g., Galaxy Z Flip resting halfway open on a table.
@@ -131,29 +158,39 @@ final class AppRouter({
     //   ),
     // );
     return switch (route) {
-      OnboardingRoute() => KaiselStandalonePage(
-        Placeholder(
-          color: Colors.red,
-        ),
-      ), //TODO:
-      MainShellRoute() => KaiselStandalonePage(LazyShell()),
       // TODO: Handle this case.
       ConsentModalRoute() => throw UnimplementedError(),
       // TODO: Handle this case.
-      AuthenticationModalRoute() => throw UnimplementedError(),
+      AuthenticationModalRoute() => KaiselStandalonePage(
+        AuthenticationModalScreen(
+          client: client,
+        ),
+      ),
 
       // TODO: Handle this case.
       LocationModalRoute<dynamic>() => throw UnimplementedError(),
+      //TODO:
+      MainShellRoute() => KaiselStandalonePage(LazyShell()),
+      //TODO:
+      OnboardingRoute() => KaiselStandalonePage(
+        OnboardingScreen(),
+      ),
       // TODO: Handle this case.
-      PrivacyPolicyRoute() => throw UnimplementedError(),
+      PrivacyPolicyRoute() => KaiselStandalonePage(
+        PrivacyPolicyScreen(),
+      ),
       // TODO: Handle this case.
-      TermsAndConditionsRoute() => throw UnimplementedError(),
+      TermsAndConditionsRoute() => KaiselStandalonePage(
+        TermsAndConditionsScreen(),
+      ),
       // TODO: Handle this case.
-      AboutRoute() => throw UnimplementedError(),
+      AboutRoute() => KaiselStandalonePage(
+        AboutScreen(),
+      ),
       // TODO: Handle this case.
-      SocialsRoute() => throw UnimplementedError(),
-      // TODO: Handle this case.
-      SupportRoute() => throw UnimplementedError(),
+      SocialsRoute() => KaiselStandalonePage(
+        SocialsScreen(),
+      ),
     };
   }
 
@@ -190,4 +227,78 @@ final class AppRouter({
       },
     );
   }
+}
+
+////
+///
+///
+/// A transparent flow page that slides its content up from the bottom, and
+/// forwards name/arguments so the flow stays observable.
+class _SlideUpFlowPage extends Page<Object?> {
+  const _SlideUpFlowPage({
+    required LocalKey super.key,
+    required this.child,
+    super.name,
+    super.arguments,
+  });
+
+  final Widget child;
+
+  @override
+  Route<Object?> createRoute(BuildContext context) {
+    return PageRouteBuilder<Object?>(
+      settings: this,
+      opaque: false,
+      transitionDuration: const Duration(milliseconds: 280),
+      reverseTransitionDuration: const Duration(milliseconds: 220),
+      pageBuilder: (_, _, _) => child,
+      transitionsBuilder: (_, animation, _, child) => SlideTransition(
+        position: Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+            .animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            ),
+        child: child,
+      ),
+    );
+  }
+}
+
+Page<Object?> _pageWrapper(KaiselPageWrapperContext<AppRoute> ctx) {
+  if (ctx.isFlow) {
+    return _SlideUpFlowPage(
+      key: ctx.key,
+      name: ctx.route.routeName,
+      arguments: ctx.route,
+      child: ctx.child,
+    );
+  }
+  return MaterialPage<Object?>(
+    key: ctx.key,
+    name: ctx.route.routeName,
+    arguments: ctx.route,
+    child: ctx.child,
+  );
+}
+
+Widget _modalBuilder(
+  BuildContext context,
+  KaiselModalRoute<Object?> flowRoute,
+  Widget flowChild,
+) {
+  return ColoredBox(
+    color: Colors.black.withValues(alpha: 0.6),
+    child: Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+        decoration: BoxDecoration(
+          color: context.theme.cardColor,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: SafeArea(top: false, child: flowChild),
+      ),
+    ),
+  );
 }

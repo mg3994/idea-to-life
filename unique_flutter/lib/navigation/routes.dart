@@ -32,8 +32,6 @@ final class const AboutRoute() extends AppRoute;
 
 final class const SocialsRoute() extends AppRoute;
 
-final class const SupportRoute() extends AppRoute;
-
 /// ===========================================================================
 /// Main shell
 ///
@@ -151,3 +149,5 @@ final class const AppearanceSettingRoute() extends SettingsRoute;
 final class const NotificationsSettingRoute() extends SettingsRoute;
 
 final class const PrivacySettingRoute() extends SettingsRoute;
+
+final class const SupportRoute() extends SettingsRoute;

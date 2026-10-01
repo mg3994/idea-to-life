@@ -12,9 +12,7 @@ import '../../navigation/router.dart'
         GeneralSettingRoute,
         HomeRoot,
         HomeRoute,
-        LabelDetailRoute,
         LabelsRoot,
-        LabelsMasterRoute,
         LabelsRoute,
         MainShellRoute,
         NotificationsSettingRoute,
@@ -22,9 +20,14 @@ import '../../navigation/router.dart'
         SettingsMasterRoute,
         SettingsRoute,
         StoresRoot,
-        StoresRoute;
+        StoresRoute,
+        SupportRoute;
 import '../features.dart'
-    show LabelDetailScreen, LabelsMasterScreen, SettingsMasterScreen;
+    show
+        LabelDetailScreen,
+        LabelsMasterScreen,
+        SettingsMasterScreen,
+        SupportScreen;
 import '../stores/presentation/screens/store_detail_screen.dart'
     show StoreDetailScreen;
 import '../stores/stores.dart' show StoreMasterScreen;
@@ -278,6 +281,7 @@ class LazyShell extends StatelessWidget {
           GeneralSettingRoute() => const Placeholder(),
           NotificationsSettingRoute() => const Placeholder(),
           PrivacySettingRoute() => const Placeholder(),
+          SupportRoute() => const SupportScreen(),
           _ => const AppearanceSettingsScreen(),
         },
         masterFraction: context.mq.masterFraction ?? 0.33,
@@ -294,6 +298,7 @@ class LazyShell extends StatelessWidget {
         GeneralSettingRoute() => const Placeholder(),
         NotificationsSettingRoute() => const Placeholder(),
         PrivacySettingRoute() => const Placeholder(),
+        SupportRoute() => const SupportScreen(),
         _ => SettingsMasterScreen(
           selectedRoute: route,
           onSelectRoute: (tileContext, targetRoute) {

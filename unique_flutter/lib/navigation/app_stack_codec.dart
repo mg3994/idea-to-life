@@ -64,6 +64,7 @@ final class const AppStackCodec({
       ['settings', 'appearance'] => _appearanceConfig(),
       ['settings', 'notifications'] => _notificationsConfig(),
       ['settings', 'privacy'] => _privacyConfig(),
+      ['settings', 'support'] => _supportConfig(),
       _ => null,
     };
   }
@@ -259,6 +260,16 @@ final class const AppStackCodec({
     );
   }
 
+  KaiselConfig<AppRoute>? _supportConfig() {
+    return KaiselConfig(
+      mainStack: const [MainShellRoute()],
+      nestedState: KaiselShellConfig(
+        activeBranch: _settingsBranch,
+        activeBranchStack: const [SettingsMasterRoute(), SupportRoute()],
+      ),
+    );
+  }
+
   @override
   Uri encode(KaiselConfig<AppRoute> config) {
     final uri = switch ((config.mainStack.lastOrNull, config.nestedState)) {
@@ -304,6 +315,7 @@ final class const AppStackCodec({
       GeneralSettingRoute() => Uri(path: '/settings/general'),
       NotificationsSettingRoute() => Uri(path: '/settings/notifications'),
       PrivacySettingRoute() => Uri(path: '/settings/privacy'),
+      SupportRoute() => Uri(path: '/settings/support'),
       SettingsMasterRoute() => Uri(path: '/settings'),
       _ => Uri(path: '/settings'),
     };

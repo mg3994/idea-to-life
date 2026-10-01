@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../../core/core.dart' show BuildContextLocalizationExtensions;
 import '../../../../navigation/router.dart'
     show
-        SettingsRoute,
+        AppearanceSettingRoute,
         GeneralSettingRoute,
         NotificationsSettingRoute,
         PrivacySettingRoute,
-        AppearanceSettingRoute;
+        SettingsRoute,
+        SupportRoute;
 
 class const SettingsCategoryItemData({
   required final SettingsRoute route,
@@ -41,6 +42,12 @@ final List<SettingsCategoryItemData> kSettingsCategoryItems = [
     subtitleBuilder: (context) => context.l10n.settingsPrivacySubtitle,
     icon: Icons.lock_outline,
   ),
+  // SettingsCategoryItemData(
+  //   route: const SupportRoute(),
+  //   titleBuilder: (context) => context.l10n.settingsSupportTitle,
+  //   subtitleBuilder: (context) => context.l10n.settingsSupportSubtitle,
+  //   icon: Icons.support,
+  // ),
 ];
 
 class const SettingsMasterScreen({
