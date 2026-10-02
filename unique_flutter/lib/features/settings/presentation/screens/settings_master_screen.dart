@@ -42,12 +42,12 @@ final List<SettingsCategoryItemData> kSettingsCategoryItems = [
     subtitleBuilder: (context) => context.l10n.settingsPrivacySubtitle,
     icon: Icons.lock_outline,
   ),
-  // SettingsCategoryItemData(
-  //   route: const SupportRoute(),
-  //   titleBuilder: (context) => context.l10n.settingsSupportTitle,
-  //   subtitleBuilder: (context) => context.l10n.settingsSupportSubtitle,
-  //   icon: Icons.support,
-  // ),
+  SettingsCategoryItemData(
+    route: const SupportRoute(),
+    titleBuilder: (context) => context.l10n.settingsSupportTitle,
+    subtitleBuilder: (context) => context.l10n.settingsSupportSubtitle,
+    icon: Icons.support,
+  ),
 ];
 
 class const SettingsMasterScreen({

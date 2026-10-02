@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart' show BuildContextLocalizationExtensions;
-import '../../../../navigation/router.dart'
-    show StoreDetailRoute, StoresRoot, StoresRoute;
+import '../../../../navigation/router.dart' show StoresRoot, StoresRoute;
 
 class StoreMasterScreen extends StatelessWidget {
   const StoreMasterScreen({
@@ -59,7 +58,7 @@ class StoreMasterScreen extends StatelessWidget {
                 separatorBuilder: (_, __) => const SizedBox(height: 8),
                 itemBuilder: (context, index) {
                   final store = _dummyStores[index];
-                  final route = StoresRoot();
+                  final route = StoresRoot("");
                   final isSelected = selectedRoute is StoresRoot;
 
                   return _StoreTile(

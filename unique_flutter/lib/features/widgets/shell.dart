@@ -17,7 +17,7 @@ import '../../navigation/router.dart'
         MainShellRoute,
         NotificationsSettingRoute,
         PrivacySettingRoute,
-        SettingsMasterRoute,
+        SettingsRoot,
         SettingsRoute,
         StoresRoot,
         StoresRoute,
@@ -49,22 +49,22 @@ class LazyShell extends StatelessWidget {
 
   List<AppNavItem> get _navItems => [
     AppNavItem(
-      label: (context) => 'Home',
+      label: (context) => context.l10n.homeTitle,
       unselectedIcon: Icons.home_outlined,
       selectedIcon: Icons.home,
     ),
     AppNavItem(
-      label: (context) => 'Stores',
+      label: (context) => context.l10n.storesTitle,
       unselectedIcon: Icons.storefront_outlined,
       selectedIcon: Icons.storefront,
     ),
     AppNavItem(
-      label: (context) => 'Labels',
+      label: (context) => context.l10n.labelsTitle,
       unselectedIcon: Icons.label_outline,
       selectedIcon: Icons.label,
     ),
     AppNavItem(
-      label: (context) => 'Settings',
+      label: (context) => context.l10n.settingsTitle,
       unselectedIcon: Icons.settings_outlined,
       selectedIcon: Icons.settings,
     ),
@@ -216,7 +216,7 @@ class LazyShell extends StatelessWidget {
   ) {
     if (isWide) {
       final effectiveRoute = switch (route) {
-        LabelsRoute() => const LabelsRoot(),
+        LabelsRoute() => const LabelsRoot(""),
         _ => route,
       };
 
@@ -264,7 +264,7 @@ class LazyShell extends StatelessWidget {
   ) {
     if (isWide) {
       final effectiveRoute = switch (route) {
-        SettingsMasterRoute() => const AppearanceSettingRoute(),
+        SettingsRoot(:final query) => const AppearanceSettingRoute(),
         _ => route,
       };
 
@@ -287,7 +287,7 @@ class LazyShell extends StatelessWidget {
         masterFraction: context.mq.masterFraction ?? 0.33,
       );
 
-      return (ctx.previous is SettingsMasterRoute)
+      return (ctx.previous is SettingsRoot)
           ? KaiselAbsorbingPage(widget: twoPaneWidget)
           : KaiselStandalonePage(twoPaneWidget);
     }
@@ -322,15 +322,15 @@ class LazyShell extends StatelessWidget {
           builder: _buildContentRoute,
         ),
         KaiselBranchSpec<StoresRoute>.adaptive(
-          initial: const StoresRoot(),
+          initial: const StoresRoot(""),
           builder: _buildContentRoute,
         ),
         KaiselBranchSpec<LabelsRoute>.adaptive(
-          initial: const LabelsRoot(),
+          initial: const LabelsRoot(""),
           builder: _buildContentRoute,
         ),
         KaiselBranchSpec<SettingsRoute>.adaptive(
-          initial: const SettingsMasterRoute(),
+          initial: const SettingsRoot(""),
           builder: _buildContentRoute,
         ),
       ],

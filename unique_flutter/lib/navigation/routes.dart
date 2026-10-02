@@ -22,15 +22,19 @@ final class const LocationModalRoute<T>()
     extends AppRoute
     implements KaiselModalRoute<T?>;
 
+final class const PrivacyPolicyRoute()
+    extends AppRoute
+    implements KaiselModalRoute;
+
+final class const TermsAndConditionsRoute()
+    extends AppRoute
+    implements KaiselModalRoute;
+
+final class const AboutRoute() extends AppRoute implements KaiselModalRoute;
+
+final class const SocialsRoute() extends AppRoute implements KaiselModalRoute;
+
 final class const OnboardingRoute() extends AppRoute;
-
-final class const PrivacyPolicyRoute() extends AppRoute;
-
-final class const TermsAndConditionsRoute() extends AppRoute;
-
-final class const AboutRoute() extends AppRoute;
-
-final class const SocialsRoute() extends AppRoute;
 
 /// ===========================================================================
 /// Main shell
@@ -60,22 +64,19 @@ final class const HomeRoot() extends HomeRoute;
 
 /// Detail pushed from [HomeRoot].
 
-/// Global search route pushed from Home.
-final class const GlobalSearchRoute(final String query) extends HomeRoute {
-  @override
-  List<Object?> get props => [query];
-  @override
-  String get restorationId => 'search-$query';
-}
-
 // ===========================================================================
 // Stores / Blog Branch Routes
 // ===========================================================================
 
 sealed class const StoresRoute() extends MainShellRoute;
 
-/// Root of the Stores navigation stack.
-final class const StoresRoot() extends StoresRoute;
+/// Global search route pushed from Stores.
+final class const StoresRoot(final String? query) extends StoresRoute {
+  @override
+  List<Object?> get props => [query];
+  @override
+  String get restorationId => 'search-$query';
+}
 
 final class const BlogDetailRoute(final String blogId) extends StoresRoute {
   @override
@@ -97,23 +98,25 @@ final class const BlogPageRoute(final String blogId, final String pageId)
   @override
   List<Object?> get props => [blogId, pageId];
   @override
-  String get restorationId => 'blog-$blogId-page-$pageId';
+  String get restorationId => 'blog-$blogId-p-$pageId';
 }
 
-final class const BlogSearchRoute(final String blogId, final String query)
+final class const BlogSearchRoute(final String blogId, final String? query)
     extends StoresRoute {
   @override
   List<Object?> get props => [blogId, query];
   @override
-  String get restorationId => 'blog-$blogId-search-$query';
+  String get restorationId =>
+      query != null ? 'blog-$blogId-search-$query' : 'blog-$blogId-search';
 }
 
-final class const BlogSearchLabelRoute(final String blogId, final String label)
+final class const BlogSearchLabelRoute(final String blogId, final String? label)
     extends StoresRoute {
   @override
   List<Object?> get props => [blogId, label];
   @override
-  String get restorationId => 'blog-$blogId-label-$label';
+  String get restorationId =>
+      label != null ? 'blog-$blogId-label-$label' : 'blog-$blogId-label';
 }
 // ===========================================================================
 // Labels / Category Branch Routes
@@ -121,15 +124,11 @@ final class const BlogSearchLabelRoute(final String blogId, final String label)
 
 sealed class const LabelsRoute() extends MainShellRoute;
 
-/// Root of the Labels navigation stack.
-final class const LabelsRoot() extends LabelsRoute;
-
-final class const GlobalSearchLabelRoute(final String label)
-    extends LabelsRoute {
+final class const LabelsRoot(final String? label) extends LabelsRoute {
   @override
   List<Object?> get props => [label];
   @override
-  String get restorationId => 'label-$label';
+  String get restorationId => label != null ? 'label-$label' : 'all-labels';
 }
 
 /// ===========================================================================
@@ -139,7 +138,12 @@ final class const GlobalSearchLabelRoute(final String label)
 sealed class const SettingsRoute() extends MainShellRoute;
 
 /// Root/master of the Settings navigation stack.
-final class const SettingsMasterRoute() extends SettingsRoute;
+final class const SettingsRoot(final String? query) extends SettingsRoute {
+  @override
+  List<Object?> get props => [query];
+  @override
+  String get restorationId => query != null ? 'settings-$query' : 'settings';
+}
 
 final class const GeneralSettingRoute() extends SettingsRoute;
 

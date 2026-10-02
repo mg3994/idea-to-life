@@ -105,6 +105,24 @@ abstract class AppLocalizations {
   /// **'BlogStore'**
   String get appName;
 
+  /// Title for the home screen
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTitle;
+
+  /// Title for the stores screen
+  ///
+  /// In en, this message translates to:
+  /// **'Stores'**
+  String get storesTitle;
+
+  /// Title for the labels screen
+  ///
+  /// In en, this message translates to:
+  /// **'Labels'**
+  String get labelsTitle;
+
   /// Main title for the settings screen
   ///
   /// In en, this message translates to:
@@ -170,6 +188,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Data protection, active sessions, and security'**
   String get settingsPrivacySubtitle;
+
+  /// Title for support settings category
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get settingsSupportTitle;
+
+  /// Subtitle description for support settings category
+  ///
+  /// In en, this message translates to:
+  /// **'Help, feedback, and contact information'**
+  String get settingsSupportSubtitle;
 
   /// Title for the theme mode setting section
   ///

@@ -75,7 +75,7 @@ final class AppRouter({
       // guards: [consentGuard],
       observers: () => [appDependencies.analyticsGateway.observer()],
       onScreenChanged: (route) {
-        debugPrint('🔥 ROUTE = ${route.routeName}');
+        debugPrint('🔥==?>> ROUTE = ${route.routeName}');
         appDependencies.analyticsGateway.logScreenView(
           screenName: route.routeName,
         );

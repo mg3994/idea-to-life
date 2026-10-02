@@ -16,6 +16,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'BlogStore';
 
   @override
+  String get homeTitle => 'Home';
+
+  @override
+  String get storesTitle => 'Stores';
+
+  @override
+  String get labelsTitle => 'Labels';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override
@@ -51,6 +60,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsPrivacySubtitle =>
       'Data protection, active sessions, and security';
+
+  @override
+  String get settingsSupportTitle => 'Support';
+
+  @override
+  String get settingsSupportSubtitle =>
+      'Help, feedback, and contact information';
 
   @override
   String get themeModeTitle => 'Theme Mode';

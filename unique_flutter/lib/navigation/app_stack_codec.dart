@@ -27,13 +27,11 @@ final class const AppStackCodec({
       ['onboarding'] => _onboardingConfig(),
       // --- Global Search & Labels ---
       // Pattern: /search?q=query
+      //search in stores (global)
       ['search'] => _globalSearchConfig(
         query: uri.queryParameters['q'],
       ),
-      // Pattern: /search/label/:label
-      ['search', 'label', final label] => _globalSearchLabelConfig(
-        Uri.decodeComponent(label),
-      ),
+
       // .. TODO:
       // Pattern: /blog/:blogId/search?q=query
       ['blog', final blogId, 'search'] => _blogSearchConfig(
@@ -51,15 +49,22 @@ final class const AppStackCodec({
         blogId,
         postId,
       ),
-      ['blog', final blogId, 'page', final pageId] => _blogPageConfig(
+      ['blog', final blogId, 'p', final pageId] => _blogPageConfig(
         blogId,
         pageId,
       ),
       //
-      ['labels'] => _labelsConfig(),
+      // Pattern: /search/label/:label
+      //search in labels (global)
+      ['search', 'labels'] => _labelsConfig(""),
+      ['search', 'label', final label] => _labelsConfig(
+        Uri.decodeComponent(label),
+      ),
 
       // TODO add more
-      ['settings'] => _settingsConfig(),
+      ['settings'] => _settingsConfig(
+        query: uri.queryParameters['q'],
+      ),
       ['settings', 'general'] => _generalSettingsConfig(),
       ['settings', 'appearance'] => _appearanceConfig(),
       ['settings', 'notifications'] => _notificationsConfig(),
@@ -100,10 +105,9 @@ final class const AppStackCodec({
         MainShellRoute(),
       ],
       nestedState: KaiselShellConfig(
-        activeBranch: _homeBranch,
+        activeBranch: _storesBranch,
         activeBranchStack: [
-          const HomeRoot(),
-          GlobalSearchRoute(query ?? ''),
+          StoresRoot(query ?? ''),
         ],
       ),
     );
@@ -117,7 +121,7 @@ final class const AppStackCodec({
       nestedState: KaiselShellConfig(
         activeBranch: _storesBranch,
         activeBranchStack: [
-          StoresRoot(),
+          StoresRoot(blogId), //search with blogId
           BlogDetailRoute(blogId),
           BlogSearchRoute(blogId, query ?? ''),
         ],
@@ -133,7 +137,7 @@ final class const AppStackCodec({
       nestedState: KaiselShellConfig(
         activeBranch: _storesBranch,
         activeBranchStack: [
-          StoresRoot(),
+          StoresRoot(blogId), //search with Blog ID
           BlogDetailRoute(blogId),
           BlogSearchLabelRoute(blogId, label ?? ""),
         ],
@@ -146,7 +150,12 @@ final class const AppStackCodec({
       mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _storesBranch,
-        activeBranchStack: [StoresRoot(), BlogDetailRoute(blogId)],
+        activeBranchStack: [
+          StoresRoot(
+            blogId, //search with blog ID
+          ),
+          BlogDetailRoute(blogId),
+        ],
       ),
     );
   }
@@ -157,9 +166,10 @@ final class const AppStackCodec({
       nestedState: KaiselShellConfig(
         activeBranch: _storesBranch,
         activeBranchStack: [
-          StoresRoot(), BlogDetailRoute(blogId),
+          StoresRoot(blogId), // search with blog ID
+          BlogDetailRoute(blogId), // detail of blog with blog ID
           //blogpostsroot ///TODO:
-          BlogPostRoute(blogId, postId),
+          BlogPostRoute(blogId, postId), // post of blog with blog ID
         ],
       ),
     );
@@ -171,7 +181,7 @@ final class const AppStackCodec({
       nestedState: KaiselShellConfig(
         activeBranch: _storesBranch,
         activeBranchStack: [
-          StoresRoot(),
+          StoresRoot(blogId), // search with blog ID
           BlogDetailRoute(blogId),
           BlogPageRoute(blogId, pageId),
         ],
@@ -179,17 +189,7 @@ final class const AppStackCodec({
     );
   }
 
-  KaiselConfig<AppRoute> _labelsConfig() {
-    return KaiselConfig(
-      mainStack: const [MainShellRoute()],
-      nestedState: KaiselShellConfig(
-        activeBranch: _labelsBranch,
-        activeBranchStack: const [LabelsRoot()],
-      ),
-    );
-  }
-
-  KaiselConfig<AppRoute> _globalSearchLabelConfig(String label) {
+  KaiselConfig<AppRoute> _labelsConfig(String? label) {
     return KaiselConfig(
       mainStack: const [
         MainShellRoute(),
@@ -197,19 +197,18 @@ final class const AppStackCodec({
       nestedState: KaiselShellConfig(
         activeBranch: _labelsBranch,
         activeBranchStack: [
-          const LabelsRoot(),
-          GlobalSearchLabelRoute(label),
+          LabelsRoot(label),
         ],
       ),
     );
   }
 
-  KaiselConfig<AppRoute> _settingsConfig() {
+  KaiselConfig<AppRoute> _settingsConfig({String? query}) {
     return KaiselConfig(
       mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: const [SettingsMasterRoute()],
+        activeBranchStack: [SettingsRoot(query)],
       ),
     );
   }
@@ -219,7 +218,10 @@ final class const AppStackCodec({
       mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: const [SettingsMasterRoute(), GeneralSettingRoute()],
+        activeBranchStack: [
+          SettingsRoot(""), //TODO: do something for better
+          GeneralSettingRoute(),
+        ],
       ),
     );
   }
@@ -229,8 +231,8 @@ final class const AppStackCodec({
       mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: const [
-          SettingsMasterRoute(),
+        activeBranchStack: [
+          SettingsRoot(""), //TODO: do something for better
           AppearanceSettingRoute(),
         ],
       ),
@@ -242,8 +244,8 @@ final class const AppStackCodec({
       mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: const [
-          SettingsMasterRoute(),
+        activeBranchStack: [
+          SettingsRoot(""), //TODO: do something for better
           NotificationsSettingRoute(),
         ],
       ),
@@ -255,7 +257,10 @@ final class const AppStackCodec({
       mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: const [SettingsMasterRoute(), PrivacySettingRoute()],
+        activeBranchStack: [
+          SettingsRoot(""), //TODO: do something for better
+          PrivacySettingRoute(),
+        ],
       ),
     );
   }
@@ -265,7 +270,10 @@ final class const AppStackCodec({
       mainStack: const [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
-        activeBranchStack: const [SettingsMasterRoute(), SupportRoute()],
+        activeBranchStack: [
+          SettingsRoot(""), //TODO: do something for better
+          SupportRoute(),
+        ],
       ),
     );
   }
@@ -274,18 +282,17 @@ final class const AppStackCodec({
   Uri encode(KaiselConfig<AppRoute> config) {
     final uri = switch ((config.mainStack.lastOrNull, config.nestedState)) {
       (OnboardingRoute(), _) => Uri(path: '/onboarding'),
-      (BlogDetailRoute(:final blogId), _) => Uri(path: '/blog/$blogId'),
-      (BlogPostRoute(:final blogId, :final postId), _) => Uri(
-        path: '/blog/$blogId/post/$postId',
-      ),
+
       (MainShellRoute(), final KaiselShellConfig shell) =>
         switch (shell.activeBranch) {
           _homeBranch => _encodeHome(shell.activeBranchStack),
-          //TODO: 2 more branches to add
+          _storesBranch => _encodeStores(shell.activeBranchStack),
+          _labelsBranch => _encodeLabels(shell.activeBranchStack),
           _settingsBranch => _encodeSettings(shell.activeBranchStack),
+          // home
           _ => Uri(path: '/'),
         },
-
+      // home
       _ => Uri(path: '/'),
     };
 
@@ -299,10 +306,55 @@ final class const AppStackCodec({
   }
 
   Uri _encodeHome(List<KaiselRoute> stack) {
+    // home
     if (stack.isEmpty) return Uri(path: '/');
 
     return switch (stack.last) {
+      // home
       _ => Uri(path: '/'),
+    };
+  }
+
+  Uri _encodeStores(List<KaiselRoute> stack) {
+    if (stack.isEmpty) return Uri(path: '/search');
+
+    return switch (stack.last) {
+      StoresRoot(:final query) => Uri(
+        path: '/search',
+        queryParameters: query != null ? {'q': query.toString()} : null,
+      ),
+      BlogDetailRoute(:final blogId) => Uri(path: '/blog/$blogId'),
+      // stores store detail => posts => [blog post]
+      BlogPostRoute(:final blogId, :final postId) => Uri(
+        path: '/blog/$blogId/post/$postId',
+      ),
+      // stores store details => pages => [blog page]
+      BlogPageRoute(:final blogId, :final pageId) => Uri(
+        path: '/blog/$blogId/p/$pageId',
+      ),
+
+      BlogSearchRoute(:final blogId, :final query) => Uri(
+        path: '/blog/$blogId/search',
+        queryParameters: query != null ? {'q': query.toString()} : null,
+      ),
+
+      BlogSearchLabelRoute(:final blogId, :final label) => Uri(
+        path: '/blog/$blogId/label',
+        queryParameters: label != null ? {'label': label} : null,
+      ),
+
+      _ => Uri(path: '/search'),
+    };
+  }
+
+  Uri _encodeLabels(List<KaiselRoute> stack) {
+    if (stack.isEmpty) return Uri(path: '/label');
+    return switch (stack.last) {
+      LabelsRoot(:final label) => Uri(
+        path: '/label',
+        pathSegments: label != null ? ['label', label] : null,
+      ),
+      _ => Uri(path: '/label'),
     };
   }
 
@@ -316,7 +368,10 @@ final class const AppStackCodec({
       NotificationsSettingRoute() => Uri(path: '/settings/notifications'),
       PrivacySettingRoute() => Uri(path: '/settings/privacy'),
       SupportRoute() => Uri(path: '/settings/support'),
-      SettingsMasterRoute() => Uri(path: '/settings'),
+      SettingsRoot(:final query) => Uri(
+        path: '/settings',
+        queryParameters: query != null ? {'q': query} : null,
+      ),
       _ => Uri(path: '/settings'),
     };
   }
