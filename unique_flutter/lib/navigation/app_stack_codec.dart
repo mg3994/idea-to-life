@@ -1,10 +1,16 @@
 part of 'router.dart';
 
-final class const AppStackCodec({
-  required final bool isOnboardingFirstRoute,
-  required final AppearanceSettingsBloc appearanceSettingsBloc,
-  required final AppDependencies appDependencies,
-}) implements KaiselConfigCodec<AppRoute> {
+final class AppStackCodec implements KaiselConfigCodec<AppRoute> {
+  const AppStackCodec({
+    required this.isOnboardingFirstRoute,
+    required this.appearanceSettingsBloc,
+    required this.appDependencies,
+  });
+
+  final bool isOnboardingFirstRoute;
+  final AppearanceSettingsBloc appearanceSettingsBloc;
+  final AppDependencies appDependencies;
+
   static const _homeBranch = 0;
   static const _storesBranch = 1;
   static const _labelsBranch = 2;
@@ -21,29 +27,17 @@ final class const AppStackCodec({
         .toList(growable: false);
 
     return switch (segments) {
-      //search/label/:name
-      // TODO: fix it
       [] => _rootConfig(),
       ['onboarding'] => _onboardingConfig(),
-      // --- Global Search & Labels ---
-      // Pattern: /search?q=query
-      //search in stores (global)
       ['search'] => _globalSearchConfig(
         query: uri.queryParameters['q'],
       ),
-
-      // .. TODO:
-      // Pattern: /blog/:blogId/search?q=query
       ['blog', final blogId, 'search'] => _blogSearchConfig(
         blogId,
         query: uri.queryParameters['q'],
       ),
-
-      // --- Blogger Search & Labels (Blog-Scoped) ---
-      // Pattern: /blog/:blogId/search/label/:label
       ['blog', final blogId, 'search', 'label', final label] =>
         _blogSearchLabelConfig(blogId, Uri.decodeComponent(label)),
-
       ['blog', final blogId] => _blogDetailConfig(blogId),
       ['blog', final blogId, 'post', final postId] => _blogPostConfig(
         blogId,
@@ -53,15 +47,10 @@ final class const AppStackCodec({
         blogId,
         pageId,
       ),
-      //
-      // Pattern: /search/label/:label
-      //search in labels (global)
       ['search', 'labels'] => _labelsConfig(""),
       ['search', 'label', final label] => _labelsConfig(
         Uri.decodeComponent(label),
       ),
-
-      // TODO add more
       ['settings'] => _settingsConfig(
         query: uri.queryParameters['q'],
       ),
@@ -86,15 +75,15 @@ final class const AppStackCodec({
   }
 
   KaiselConfig<AppRoute> _onboardingConfig() {
-    return KaiselConfig(mainStack: const [OnboardingRoute()]);
+    return const KaiselConfig(mainStack: [OnboardingRoute()]);
   }
 
   KaiselConfig<AppRoute> _homeConfig() {
-    return KaiselConfig(
-      mainStack: const [MainShellRoute()],
+    return const KaiselConfig(
+      mainStack: [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _homeBranch,
-        activeBranchStack: const [HomeRoot()],
+        activeBranchStack: [HomeRoot()],
       ),
     );
   }
@@ -121,7 +110,7 @@ final class const AppStackCodec({
       nestedState: KaiselShellConfig(
         activeBranch: _storesBranch,
         activeBranchStack: [
-          StoresRoot(blogId), //search with blogId
+          StoresRoot(blogId),
           BlogDetailRoute(blogId),
           BlogSearchRoute(blogId, query ?? ''),
         ],
@@ -137,7 +126,7 @@ final class const AppStackCodec({
       nestedState: KaiselShellConfig(
         activeBranch: _storesBranch,
         activeBranchStack: [
-          StoresRoot(blogId), //search with Blog ID
+          StoresRoot(blogId),
           BlogDetailRoute(blogId),
           BlogSearchLabelRoute(blogId, label ?? ""),
         ],
@@ -151,9 +140,7 @@ final class const AppStackCodec({
       nestedState: KaiselShellConfig(
         activeBranch: _storesBranch,
         activeBranchStack: [
-          StoresRoot(
-            blogId, //search with blog ID
-          ),
+          StoresRoot(blogId),
           BlogDetailRoute(blogId),
         ],
       ),
@@ -166,10 +153,9 @@ final class const AppStackCodec({
       nestedState: KaiselShellConfig(
         activeBranch: _storesBranch,
         activeBranchStack: [
-          StoresRoot(blogId), // search with blog ID
-          BlogDetailRoute(blogId), // detail of blog with blog ID
-          //blogpostsroot ///TODO:
-          BlogPostRoute(blogId, postId), // post of blog with blog ID
+          StoresRoot(blogId),
+          BlogDetailRoute(blogId),
+          BlogPostRoute(blogId, postId),
         ],
       ),
     );
@@ -181,7 +167,7 @@ final class const AppStackCodec({
       nestedState: KaiselShellConfig(
         activeBranch: _storesBranch,
         activeBranchStack: [
-          StoresRoot(blogId), // search with blog ID
+          StoresRoot(blogId),
           BlogDetailRoute(blogId),
           BlogPageRoute(blogId, pageId),
         ],
@@ -193,7 +179,7 @@ final class const AppStackCodec({
     return KaiselConfig(
       mainStack: const [
         MainShellRoute(),
-      ], //label bolle to category
+      ],
       nestedState: KaiselShellConfig(
         activeBranch: _labelsBranch,
         activeBranchStack: [
@@ -214,12 +200,12 @@ final class const AppStackCodec({
   }
 
   KaiselConfig<AppRoute> _generalSettingsConfig() {
-    return KaiselConfig(
-      mainStack: const [MainShellRoute()],
+    return const KaiselConfig(
+      mainStack: [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
         activeBranchStack: [
-          SettingsRoot(""), //TODO: do something for better
+          SettingsRoot(""),
           GeneralSettingRoute(),
         ],
       ),
@@ -227,12 +213,12 @@ final class const AppStackCodec({
   }
 
   KaiselConfig<AppRoute> _appearanceConfig() {
-    return KaiselConfig(
-      mainStack: const [MainShellRoute()],
+    return const KaiselConfig(
+      mainStack: [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
         activeBranchStack: [
-          SettingsRoot(""), //TODO: do something for better
+          SettingsRoot(""),
           AppearanceSettingRoute(),
         ],
       ),
@@ -240,12 +226,12 @@ final class const AppStackCodec({
   }
 
   KaiselConfig<AppRoute> _notificationsConfig() {
-    return KaiselConfig(
-      mainStack: const [MainShellRoute()],
+    return const KaiselConfig(
+      mainStack: [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
         activeBranchStack: [
-          SettingsRoot(""), //TODO: do something for better
+          SettingsRoot(""),
           NotificationsSettingRoute(),
         ],
       ),
@@ -253,25 +239,25 @@ final class const AppStackCodec({
   }
 
   KaiselConfig<AppRoute> _privacyConfig() {
-    return KaiselConfig(
-      mainStack: const [MainShellRoute()],
+    return const KaiselConfig(
+      mainStack: [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
         activeBranchStack: [
-          SettingsRoot(""), //TODO: do something for better
+          SettingsRoot(""),
           PrivacySettingRoute(),
         ],
       ),
     );
   }
 
-  KaiselConfig<AppRoute>? _supportConfig() {
-    return KaiselConfig(
-      mainStack: const [MainShellRoute()],
+  KaiselConfig<AppRoute> _supportConfig() {
+    return const KaiselConfig(
+      mainStack: [MainShellRoute()],
       nestedState: KaiselShellConfig(
         activeBranch: _settingsBranch,
         activeBranchStack: [
-          SettingsRoot(""), //TODO: do something for better
+          SettingsRoot(""),
           SupportRoute(),
         ],
       ),
@@ -289,10 +275,8 @@ final class const AppStackCodec({
           _storesBranch => _encodeStores(shell.activeBranchStack),
           _labelsBranch => _encodeLabels(shell.activeBranchStack),
           _settingsBranch => _encodeSettings(shell.activeBranchStack),
-          // home
           _ => Uri(path: '/'),
         },
-      // home
       _ => Uri(path: '/'),
     };
 
@@ -306,11 +290,9 @@ final class const AppStackCodec({
   }
 
   Uri _encodeHome(List<KaiselRoute> stack) {
-    // home
     if (stack.isEmpty) return Uri(path: '/');
 
     return switch (stack.last) {
-      // home
       _ => Uri(path: '/'),
     };
   }
@@ -318,33 +300,36 @@ final class const AppStackCodec({
   Uri _encodeStores(List<KaiselRoute> stack) {
     if (stack.isEmpty) return Uri(path: '/search');
 
-    return switch (stack.last) {
-      StoresRoot(:final query) => Uri(
+    final last = stack.last;
+    if (last is StoresRoot) {
+      return Uri(
         path: '/search',
-        queryParameters: query != null ? {'q': query.toString()} : null,
-      ),
-      BlogDetailRoute(:final blogId) => Uri(path: '/blog/$blogId'),
-      // stores store detail => posts => [blog post]
-      BlogPostRoute(:final blogId, :final postId) => Uri(
-        path: '/blog/$blogId/post/$postId',
-      ),
-      // stores store details => pages => [blog page]
-      BlogPageRoute(:final blogId, :final pageId) => Uri(
-        path: '/blog/$blogId/p/$pageId',
-      ),
+        queryParameters: last.query != null ? {'q': last.query!} : null,
+      );
+    }
+    if (last is BlogDetailRoute) {
+      return Uri(path: '/blog/${last.blogId}');
+    }
+    if (last is BlogPostRoute) {
+      return Uri(path: '/blog/${last.blogId}/post/${last.postId}');
+    }
+    if (last is BlogPageRoute) {
+      return Uri(path: '/blog/${last.blogId}/p/${last.pageId}');
+    }
+    if (last is BlogSearchRoute) {
+      return Uri(
+        path: '/blog/${last.blogId}/search',
+        queryParameters: last.query != null ? {'q': last.query!} : null,
+      );
+    }
+    if (last is BlogSearchLabelRoute) {
+      return Uri(
+        path: '/blog/${last.blogId}/label',
+        queryParameters: last.label != null ? {'label': last.label!} : null,
+      );
+    }
 
-      BlogSearchRoute(:final blogId, :final query) => Uri(
-        path: '/blog/$blogId/search',
-        queryParameters: query != null ? {'q': query.toString()} : null,
-      ),
-
-      BlogSearchLabelRoute(:final blogId, :final label) => Uri(
-        path: '/blog/$blogId/label',
-        queryParameters: label != null ? {'label': label} : null,
-      ),
-
-      _ => Uri(path: '/search'),
-    };
+    return Uri(path: '/search');
   }
 
   Uri _encodeLabels(List<KaiselRoute> stack) {
@@ -358,25 +343,35 @@ final class const AppStackCodec({
     };
   }
 
-  /// Match on [stack.last] instead of rigid 2-element list patterns.
   Uri _encodeSettings(List<KaiselRoute> stack) {
     if (stack.isEmpty) return Uri(path: '/settings');
 
-    return switch (stack.last) {
-      AppearanceSettingRoute() => Uri(path: '/settings/appearance'),
-      GeneralSettingRoute() => Uri(path: '/settings/general'),
-      NotificationsSettingRoute() => Uri(path: '/settings/notifications'),
-      PrivacySettingRoute() => Uri(path: '/settings/privacy'),
-      SupportRoute() => Uri(path: '/settings/support'),
-      SettingsRoot(:final query) => Uri(
+    final last = stack.last;
+    if (last is AppearanceSettingRoute) {
+      return Uri(path: '/settings/appearance');
+    }
+    if (last is GeneralSettingRoute) {
+      return Uri(path: '/settings/general');
+    }
+    if (last is NotificationsSettingRoute) {
+      return Uri(path: '/settings/notifications');
+    }
+    if (last is PrivacySettingRoute) {
+      return Uri(path: '/settings/privacy');
+    }
+    if (last is SupportRoute) {
+      return Uri(path: '/settings/support');
+    }
+    if (last is SettingsRoot) {
+      return Uri(
         path: '/settings',
-        queryParameters: query != null ? {'q': query} : null,
-      ),
-      _ => Uri(path: '/settings'),
-    };
+        queryParameters: last.query != null ? {'q': last.query!} : null,
+      );
+    }
+
+    return Uri(path: '/settings');
   }
 
-  // there should be no use of logic here this is just a configuration file find a better place
   void _applyGlobalLanguage(Uri uri) {
     final globalLanguage = uri.queryParameters['gl'];
 

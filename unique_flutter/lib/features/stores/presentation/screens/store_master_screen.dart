@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/core.dart' show BuildContextLocalizationExtensions;
 import '../../../../navigation/router.dart' show StoresRoot, StoresRoute;
 
-class StoreMasterScreen extends StatelessWidget {
+class StoreMasterScreen extends StatefulWidget {
   const StoreMasterScreen({
     super.key,
     this.selectedRoute,
@@ -12,6 +12,14 @@ class StoreMasterScreen extends StatelessWidget {
 
   final StoresRoute? selectedRoute;
   final void Function(BuildContext context, StoresRoute route)? onSelectRoute;
+
+  @override
+  State<StoreMasterScreen> createState() => _StoreMasterScreenState();
+}
+
+class _StoreMasterScreenState extends State<StoreMasterScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   static const _dummyStores = [
     (
@@ -30,8 +38,18 @@ class StoreMasterScreen extends StatelessWidget {
   ];
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+
+    final filteredStores = _dummyStores.where((store) {
+      return store.name.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
 
     return Scaffold(
       body: SafeArea(
@@ -48,30 +66,65 @@ class StoreMasterScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                itemCount: _dummyStores.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (context, index) {
-                  final store = _dummyStores[index];
-                  final route = StoresRoot("");
-                  final isSelected = selectedRoute is StoresRoot;
-
-                  return _StoreTile(
-                    icon: store.icon,
-                    name: store.name,
-                    isSelected: isSelected,
-                    onTap: (tileContext) {
-                      if (isSelected) return;
-                      onSelectRoute?.call(tileContext, route);
-                    },
-                  );
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: SearchBar(
+                controller: _searchController,
+                hintText: 'Search stores...',
+                leading: const Icon(Icons.search),
+                trailing: _searchQuery.isNotEmpty
+                    ? [
+                        IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            setState(() {
+                              _searchController.clear();
+                              _searchQuery = '';
+                            });
+                          },
+                        ),
+                      ]
+                    : null,
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
                 },
               ),
+            ),
+            Expanded(
+              child: filteredStores.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No stores found',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      itemCount: filteredStores.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      itemBuilder: (context, index) {
+                        final store = filteredStores[index];
+                        final route = StoresRoot("");
+                        final isSelected = widget.selectedRoute is StoresRoot;
+
+                        return _StoreTile(
+                          icon: store.icon,
+                          name: store.name,
+                          isSelected: isSelected,
+                          onTap: (tileContext) {
+                            if (isSelected) return;
+                            widget.onSelectRoute?.call(tileContext, route);
+                          },
+                        );
+                      },
+                    ),
             ),
           ],
         ),

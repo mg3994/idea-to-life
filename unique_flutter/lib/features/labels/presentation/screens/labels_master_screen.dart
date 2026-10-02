@@ -4,7 +4,7 @@ import '../../../../core/core.dart' show BuildContextLocalizationExtensions;
 import '../../../../navigation/router.dart'
     show LabelDetailRoute, LabelsMasterRoute, LabelsRoot, LabelsRoute;
 
-class LabelsMasterScreen extends StatelessWidget {
+class LabelsMasterScreen extends StatefulWidget {
   const LabelsMasterScreen({
     super.key,
     this.selectedRoute,
@@ -13,6 +13,14 @@ class LabelsMasterScreen extends StatelessWidget {
 
   final LabelsRoute? selectedRoute;
   final void Function(BuildContext context, LabelsRoute route)? onSelectRoute;
+
+  @override
+  State<LabelsMasterScreen> createState() => _LabelsMasterScreenState();
+}
+
+class _LabelsMasterScreenState extends State<LabelsMasterScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   // Placeholder label IDs — replace with real data later.
   static const _dummyLabels = [
@@ -24,8 +32,18 @@ class LabelsMasterScreen extends StatelessWidget {
   ];
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+
+    final filteredLabels = _dummyLabels.where((label) {
+      return label.name.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
 
     return Scaffold(
       body: SafeArea(
@@ -42,37 +60,71 @@ class LabelsMasterScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                itemCount: _dummyLabels.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (context, index) {
-                  final label = _dummyLabels[index];
-                  final route = LabelsRoot("");
-                  final isSelected = selectedRoute is LabelsRoot;
-
-                  return _LabelTile(
-                    icon: label.icon,
-                    name: label.name,
-                    isSelected: isSelected,
-                    onTap: (tileContext) {
-                      if (isSelected) return;
-                      onSelectRoute?.call(tileContext, route);
-                    },
-                  );
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: SearchBar(
+                controller: _searchController,
+                hintText: 'Search labels...',
+                leading: const Icon(Icons.search),
+                trailing: _searchQuery.isNotEmpty
+                    ? [
+                        IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            setState(() {
+                              _searchController.clear();
+                              _searchQuery = '';
+                            });
+                          },
+                        ),
+                      ]
+                    : null,
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
                 },
               ),
+            ),
+            Expanded(
+              child: filteredLabels.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No labels found',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      itemCount: filteredLabels.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      itemBuilder: (context, index) {
+                        final label = filteredLabels[index];
+                        final route = LabelsRoot("");
+                        final isSelected = widget.selectedRoute is LabelsRoot;
+
+                        return _LabelTile(
+                          icon: label.icon,
+                          name: label.name,
+                          isSelected: isSelected,
+                          onTap: (tileContext) {
+                            if (isSelected) return;
+                            widget.onSelectRoute?.call(tileContext, route);
+                          },
+                        );
+                      },
+                    ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: Implement add label
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Add label — coming soon')),
           );

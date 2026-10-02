@@ -1,0 +1,8 @@
+class: UserAppearanceSettings
+table: user_appearance_settings
+fields:
+  userId: int, index
+  themeMode: String
+  seedColor: int
+  locale: String
+  updatedAt: DateTime
