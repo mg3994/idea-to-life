@@ -7,20 +7,21 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-// ignore_for_file: invalid_use_of_internal_member
-// ignore_for_file: dead_code, unnecessary_type_check
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
-    as _iacc;
+    as _i2;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _iaic;
-import 'package:serverpod_client/serverpod_client.dart' as _isc;
-import 'greetings/greeting.dart' as _izw8z7ou;
-export 'greetings/greeting.dart';
-export 'client.dart';
+    as _i3;
 
-class Protocol extends _isc.SerializationManager {
+import 'appearance/user_appearance_settings.dart' as _i4;
+import 'greetings/greeting.dart' as _i5;
+
+export 'appearance/user_appearance_settings.dart';
+export 'greetings/greeting.dart';
+
+class Protocol extends _i1.SerializationManager {
   Protocol._();
 
   factory Protocol() => _instance;
@@ -47,31 +48,36 @@ class Protocol extends _isc.SerializationManager {
           'className': dataClassName,
           'data': data,
         });
-      } on _isc.DeserializationClassNameNotFoundException catch (_) {
-        // If the className is not recognized (e.g., older client receiving
-        // data with a new subtype), fall back to deserializing without the
-        // className, using the expected type T.
+      } on _i1.DeserializationClassNameNotFoundException catch (_) {
+        // Fallback to deserializing without the className using expected type T.
       }
     }
 
-    if (t == _izw8z7ou.Greeting) {
-      return _izw8z7ou.Greeting.fromJson(data) as T;
+    if (t == _i4.UserAppearanceSettings) {
+      return _i4.UserAppearanceSettings.fromJson(data) as T;
     }
-    if (t == _isc.getType<_izw8z7ou.Greeting?>()) {
-      return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.UserAppearanceSettings?>()) {
+      return (data != null ? _i4.UserAppearanceSettings.fromJson(data) : null) as T;
+    }
+    if (t == _i5.Greeting) {
+      return _i5.Greeting.fromJson(data) as T;
+    }
+    if (t == _i1.getType<_i5.Greeting?>()) {
+      return (data != null ? _i5.Greeting.fromJson(data) : null) as T;
     }
     try {
-      return _iaic.Protocol().deserialize<T>(data, t);
-    } on _isc.DeserializationTypeNotFoundException catch (_) {}
+      return _i3.Protocol().deserialize<T>(data, t);
+    } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
-      return _iacc.Protocol().deserialize<T>(data, t);
-    } on _isc.DeserializationTypeNotFoundException catch (_) {}
+      return _i2.Protocol().deserialize<T>(data, t);
+    } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _izw8z7ou.Greeting => 'Greeting',
+      _i4.UserAppearanceSettings => 'UserAppearanceSettings',
+      _i5.Greeting => 'Greeting',
       _ => null,
     };
   }
@@ -86,16 +92,18 @@ class Protocol extends _isc.SerializationManager {
     }
 
     switch (data) {
-      case _izw8z7ou.Greeting():
+      case _i4.UserAppearanceSettings():
+        return 'UserAppearanceSettings';
+      case _i5.Greeting():
         return 'Greeting';
     }
-    className = _iaic.Protocol().getClassNameForObject(data);
+    className = _i3.Protocol().getClassNameForObject(data);
     if (className != null) {
       return className.contains('.')
           ? className
           : 'serverpod_auth_idp.$className';
     }
-    className = _iacc.Protocol().getClassNameForObject(data);
+    className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
       return className.contains('.')
           ? className
@@ -110,43 +118,25 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
+    if (dataClassName == 'UserAppearanceSettings') {
+      return deserialize<_i4.UserAppearanceSettings>(data['data']);
+    }
     if (dataClassName == 'Greeting') {
-      return deserialize<_izw8z7ou.Greeting>(data['data']);
+      return deserialize<_i5.Greeting>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
-      return _iaic.Protocol().deserializeByClassName(data);
+      return _i3.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
-      return _iacc.Protocol().deserializeByClassName(data);
+      return _i2.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
 
   void _registerHostProtocols() {
-    _iaic.Protocol().registerHostProtocol('unique', this);
-    _iacc.Protocol().registerHostProtocol('unique', this);
-  }
-
-  @override
-  String getModuleName() => 'unique';
-
-  /// Maps any `Record`s known to this [Protocol] to their JSON representation
-  ///
-  /// Throws in case the record type is not known.
-  ///
-  /// This method will return `null` (only) for `null` inputs.
-  Map<String, dynamic>? mapRecordToJson(Record? record) {
-    if (record == null) {
-      return null;
-    }
-    try {
-      return _iaic.Protocol().mapRecordToJson(record);
-    } catch (_) {}
-    try {
-      return _iacc.Protocol().mapRecordToJson(record);
-    } catch (_) {}
-    throw Exception('Unsupported record type ${record.runtimeType}');
+    _i3.Protocol().registerHostProtocol('unique', this);
+    _i2.Protocol().registerHostProtocol('unique', this);
   }
 }

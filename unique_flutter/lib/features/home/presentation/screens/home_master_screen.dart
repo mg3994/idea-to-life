@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/core.dart' show BuildContextLocalizationExtensions;
 import '../../../../navigation/router.dart' show HomeRoute, HomeRoot;
 
-class HomeMasterScreen extends StatelessWidget {
+class HomeMasterScreen extends StatefulWidget {
   const HomeMasterScreen({
     super.key,
     this.selectedRoute,
@@ -13,6 +13,14 @@ class HomeMasterScreen extends StatelessWidget {
   final HomeRoute? selectedRoute;
   final void Function(BuildContext context, HomeRoute route)? onSelectRoute;
 
+  @override
+  State<HomeMasterScreen> createState() => _HomeMasterScreenState();
+}
+
+class _HomeMasterScreenState extends State<HomeMasterScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
   static const _dummyProducts = [
     (id: 'prod-1', name: 'Product Alpha', icon: Icons.inventory_2_outlined),
     (id: 'prod-2', name: 'Product Beta', icon: Icons.category_outlined),
@@ -21,8 +29,18 @@ class HomeMasterScreen extends StatelessWidget {
   ];
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = context.theme;
+
+    final filteredProducts = _dummyProducts.where((product) {
+      return product.name.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
 
     return Scaffold(
       body: SafeArea(
@@ -39,30 +57,65 @@ class HomeMasterScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                itemCount: _dummyProducts.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (context, index) {
-                  final product = _dummyProducts[index];
-                  final route = HomeRoot();
-                  final isSelected = selectedRoute is HomeRoot;
-
-                  return _HomeTile(
-                    icon: product.icon,
-                    name: product.name,
-                    isSelected: isSelected,
-                    onTap: (tileContext) {
-                      if (isSelected) return;
-                      onSelectRoute?.call(tileContext, route);
-                    },
-                  );
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: SearchBar(
+                controller: _searchController,
+                hintText: 'Search products...',
+                leading: const Icon(Icons.search),
+                trailing: _searchQuery.isNotEmpty
+                    ? [
+                        IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            setState(() {
+                              _searchController.clear();
+                              _searchQuery = '';
+                            });
+                          },
+                        ),
+                      ]
+                    : null,
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
                 },
               ),
+            ),
+            Expanded(
+              child: filteredProducts.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No products found',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      itemCount: filteredProducts.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      itemBuilder: (context, index) {
+                        final product = filteredProducts[index];
+                        final route = HomeRoot();
+                        final isSelected = widget.selectedRoute is HomeRoot;
+
+                        return _HomeTile(
+                          icon: product.icon,
+                          name: product.name,
+                          isSelected: isSelected,
+                          onTap: (tileContext) {
+                            if (isSelected) return;
+                            widget.onSelectRoute?.call(tileContext, route);
+                          },
+                        );
+                      },
+                    ),
             ),
           ],
         ),

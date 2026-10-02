@@ -17,7 +17,10 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
+import 'appearance/user_appearance_settings.dart' as _iua;
 import 'greetings/greeting.dart' as _izw8z7ou;
+
+export 'appearance/user_appearance_settings.dart';
 export 'greetings/greeting.dart';
 
 class Protocol extends _is.DatabaseSerializationManager {
@@ -28,6 +31,81 @@ class Protocol extends _is.DatabaseSerializationManager {
   static final Protocol _instance = Protocol._().._registerHostProtocols();
 
   static List<_isp.TableDefinition> get targetTableDefinitions => [
+    _isp.TableDefinition(
+      name: 'user_appearance_settings',
+      dartName: 'UserAppearanceSettings',
+      schema: 'public',
+      module: 'unique',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.integer,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: "nextval('user_appearance_settings_id_seq'::regclass)",
+        ),
+        _isp.ColumnDefinition(
+          name: 'userId',
+          columnType: _isp.ColumnType.integer,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'themeMode',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'seedColor',
+          columnType: _isp.ColumnType.integer,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'locale',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'user_appearance_settings_pkey',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'user_appearance_settings_userId_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'userId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     ..._iais.Protocol.targetTableDefinitions,
     ..._iacs.Protocol.targetTableDefinitions,
     ..._isp.Protocol.targetTableDefinitions,
@@ -54,12 +132,16 @@ class Protocol extends _is.DatabaseSerializationManager {
           'data': data,
         });
       } on _is.DeserializationClassNameNotFoundException catch (_) {
-        // If the className is not recognized (e.g., older client receiving
-        // data with a new subtype), fall back to deserializing without the
-        // className, using the expected type T.
+        // Fallback to deserializing without the className using expected type T.
       }
     }
 
+    if (t == _iua.UserAppearanceSettings) {
+      return _iua.UserAppearanceSettings.fromJson(data) as T;
+    }
+    if (t == _is.getType<_iua.UserAppearanceSettings?>()) {
+      return (data != null ? _iua.UserAppearanceSettings.fromJson(data) : null) as T;
+    }
     if (t == _izw8z7ou.Greeting) {
       return _izw8z7ou.Greeting.fromJson(data) as T;
     }
@@ -80,6 +162,7 @@ class Protocol extends _is.DatabaseSerializationManager {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
+      _iua.UserAppearanceSettings => 'UserAppearanceSettings',
       _izw8z7ou.Greeting => 'Greeting',
       _ => null,
     };
@@ -95,6 +178,8 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
 
     switch (data) {
+      case _iua.UserAppearanceSettings():
+        return 'UserAppearanceSettings';
       case _izw8z7ou.Greeting():
         return 'Greeting';
     }
@@ -123,6 +208,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
+    if (dataClassName == 'UserAppearanceSettings') {
+      return deserialize<_iua.UserAppearanceSettings>(data['data']);
+    }
     if (dataClassName == 'Greeting') {
       return deserialize<_izw8z7ou.Greeting>(data['data']);
     }
@@ -148,6 +236,9 @@ class Protocol extends _is.DatabaseSerializationManager {
 
   @override
   _is.Table? getTableForType(Type t) {
+    if (t == _iua.UserAppearanceSettings) {
+      return _iua.UserAppearanceSettings.t;
+    }
     {
       var table = _iais.Protocol().getTableForType(t);
       if (table != null) {
@@ -176,11 +267,6 @@ class Protocol extends _is.DatabaseSerializationManager {
   @override
   String getModuleName() => 'unique';
 
-  /// Maps any `Record`s known to this [Protocol] to their JSON representation
-  ///
-  /// Throws in case the record type is not known.
-  ///
-  /// This method will return `null` (only) for `null` inputs.
   Map<String, dynamic>? mapRecordToJson(Record? record) {
     if (record == null) {
       return null;
