@@ -1,132 +1,195 @@
 part of 'router.dart';
 
 /// ===========================================================================
-/// Application routes
+/// Application route contracts & interfaces
 /// ===========================================================================
-/// Marker for routes that require authentication.
-sealed class const RequiresAuth();
 
-/// Marker for routes that require authentication.
+/// Interface for routes requiring authentication.
+abstract interface class RequiresAuth {}
 
-sealed class const AppRoute() extends KaiselRoute;
+/// Interface for routes supporting query parameters / search queries.
+abstract interface class QueryRoute {
+  String? get query;
+}
 
-final class const ConsentModalRoute()
-    extends AppRoute
-    implements KaiselModalRoute<bool?>;
+/// Interface for routes associated with a specific blog / store ID.
+abstract interface class BlogScopedRoute {
+  String get blogId;
+}
 
-final class const AuthenticationModalRoute()
-    extends AppRoute
-    implements KaiselModalRoute<bool?>;
+/// Base class for all application routes.
+sealed class AppRoute extends KaiselRoute {
+  const AppRoute();
+}
 
-final class const LocationModalRoute<T>()
-    extends AppRoute
-    implements KaiselModalRoute<T?>;
+final class ConsentModalRoute extends AppRoute
+    implements KaiselModalRoute<bool?> {
+  const ConsentModalRoute();
+}
 
-final class const PrivacyPolicyRoute()
-    extends AppRoute
-    implements KaiselModalRoute;
+final class AuthenticationModalRoute extends AppRoute
+    implements KaiselModalRoute<bool?> {
+  const AuthenticationModalRoute();
+}
 
-final class const TermsAndConditionsRoute()
-    extends AppRoute
-    implements KaiselModalRoute;
+final class LocationModalRoute<T> extends AppRoute
+    implements KaiselModalRoute<T?> {
+  const LocationModalRoute();
+}
 
-final class const AboutRoute() extends AppRoute implements KaiselModalRoute;
+final class PrivacyPolicyRoute extends AppRoute implements KaiselModalRoute {
+  const PrivacyPolicyRoute();
+}
 
-final class const SocialsRoute() extends AppRoute implements KaiselModalRoute;
+final class TermsAndConditionsRoute extends AppRoute implements KaiselModalRoute {
+  const TermsAndConditionsRoute();
+}
 
-final class const OnboardingRoute() extends AppRoute;
+final class AboutRoute extends AppRoute implements KaiselModalRoute {
+  const AboutRoute();
+}
+
+final class SocialsRoute extends AppRoute implements KaiselModalRoute {
+  const SocialsRoute();
+}
+
+final class OnboardingRoute extends AppRoute {
+  const OnboardingRoute();
+}
 
 /// ===========================================================================
-/// Main shell
-///
-/// ├── HomeRoute
-/// │   └── HomeRoot
-/// │       └──
-/// │   ...
-/// └── SettingsRoute
-///     └── SettingsMasterRoute
-///         └── AppearanceSettingRoute
+/// Main shell route host
 /// ===========================================================================
-/// soe extra pages like PrivacyPoicy, TermsAndConditions and About, Socials , Contact and so on
 
-// sealed
-
-final class const MainShellRoute() extends AppRoute; // this is our ShellHost
+final class MainShellRoute extends AppRoute {
+  const MainShellRoute();
+}
 
 /// ===========================================================================
 /// Home branch
 /// ===========================================================================
 
-sealed class const HomeRoute() extends MainShellRoute;
-
-/// Root of the Home navigation stack.
-final class const HomeRoot() extends HomeRoute;
-
-/// Detail pushed from [HomeRoot].
-
-// ===========================================================================
-// Stores / Blog Branch Routes
-// ===========================================================================
-
-sealed class const StoresRoute() extends MainShellRoute;
-
-/// Global search route pushed from Stores.
-final class const StoresRoot(final String? query) extends StoresRoute {
-  @override
-  List<Object?> get props => [query];
-  @override
-  String get restorationId => 'search-$query';
+sealed class HomeRoute extends MainShellRoute {
+  const HomeRoute();
 }
 
-final class const BlogDetailRoute(final String blogId) extends StoresRoute {
+/// Root of the Home navigation stack.
+final class HomeRoot extends HomeRoute {
+  const HomeRoot();
+}
+
+/// ===========================================================================
+/// Stores / Blog Branch Routes
+/// ===========================================================================
+
+sealed class StoresRoute extends MainShellRoute {
+  const StoresRoute();
+}
+
+/// Global search route pushed from Stores.
+final class StoresRoot extends StoresRoute implements QueryRoute {
+  const StoresRoot([this.query]);
+
+  @override
+  final String? query;
+
+  @override
+  List<Object?> get props => [query];
+
+  @override
+  String get restorationId => query != null ? 'search-$query' : 'search';
+}
+
+final class BlogDetailRoute extends StoresRoute implements BlogScopedRoute {
+  const BlogDetailRoute(this.blogId);
+
+  @override
+  final String blogId;
+
   @override
   List<Object?> get props => [blogId];
+
   @override
   String get restorationId => 'blog-$blogId';
 }
 
-final class const BlogPostRoute(final String blogId, final String postId)
-    extends StoresRoute {
+final class BlogPostRoute extends StoresRoute implements BlogScopedRoute {
+  const BlogPostRoute(this.blogId, this.postId);
+
+  @override
+  final String blogId;
+  final String postId;
+
   @override
   List<Object?> get props => [blogId, postId];
+
   @override
   String get restorationId => 'blog-$blogId-post-$postId';
 }
 
-final class const BlogPageRoute(final String blogId, final String pageId)
-    extends StoresRoute {
+final class BlogPageRoute extends StoresRoute implements BlogScopedRoute {
+  const BlogPageRoute(this.blogId, this.pageId);
+
+  @override
+  final String blogId;
+  final String pageId;
+
   @override
   List<Object?> get props => [blogId, pageId];
+
   @override
   String get restorationId => 'blog-$blogId-p-$pageId';
 }
 
-final class const BlogSearchRoute(final String blogId, final String? query)
-    extends StoresRoute {
+final class BlogSearchRoute extends StoresRoute
+    implements BlogScopedRoute, QueryRoute {
+  const BlogSearchRoute(this.blogId, [this.query]);
+
+  @override
+  final String blogId;
+
+  @override
+  final String? query;
+
   @override
   List<Object?> get props => [blogId, query];
+
   @override
   String get restorationId =>
       query != null ? 'blog-$blogId-search-$query' : 'blog-$blogId-search';
 }
 
-final class const BlogSearchLabelRoute(final String blogId, final String? label)
-    extends StoresRoute {
+final class BlogSearchLabelRoute extends StoresRoute implements BlogScopedRoute {
+  const BlogSearchLabelRoute(this.blogId, [this.label]);
+
+  @override
+  final String blogId;
+  final String? label;
+
   @override
   List<Object?> get props => [blogId, label];
+
   @override
   String get restorationId =>
       label != null ? 'blog-$blogId-label-$label' : 'blog-$blogId-label';
 }
-// ===========================================================================
-// Labels / Category Branch Routes
-// ===========================================================================
 
-sealed class const LabelsRoute() extends MainShellRoute;
+/// ===========================================================================
+/// Labels / Category Branch Routes
+/// ===========================================================================
 
-final class const LabelsRoot(final String? label) extends LabelsRoute {
+sealed class LabelsRoute extends MainShellRoute {
+  const LabelsRoute();
+}
+
+final class LabelsRoot extends LabelsRoute {
+  const LabelsRoot([this.label]);
+
+  final String? label;
+
   @override
   List<Object?> get props => [label];
+
   @override
   String get restorationId => label != null ? 'label-$label' : 'all-labels';
 }
@@ -135,23 +198,40 @@ final class const LabelsRoot(final String? label) extends LabelsRoute {
 /// Settings branch
 /// ===========================================================================
 
-sealed class const SettingsRoute() extends MainShellRoute;
+sealed class SettingsRoute extends MainShellRoute {
+  const SettingsRoute();
+}
 
 /// Root/master of the Settings navigation stack.
-final class const SettingsRoot(final String? query) extends SettingsRoute {
+final class SettingsRoot extends SettingsRoute implements QueryRoute {
+  const SettingsRoot([this.query]);
+
+  @override
+  final String? query;
+
   @override
   List<Object?> get props => [query];
+
   @override
   String get restorationId => query != null ? 'settings-$query' : 'settings';
 }
 
-final class const GeneralSettingRoute() extends SettingsRoute;
+final class GeneralSettingRoute extends SettingsRoute {
+  const GeneralSettingRoute();
+}
 
-/// Detail pushed from [SettingsMasterRoute].
-final class const AppearanceSettingRoute() extends SettingsRoute;
+final class AppearanceSettingRoute extends SettingsRoute {
+  const AppearanceSettingRoute();
+}
 
-final class const NotificationsSettingRoute() extends SettingsRoute;
+final class NotificationsSettingRoute extends SettingsRoute {
+  const NotificationsSettingRoute();
+}
 
-final class const PrivacySettingRoute() extends SettingsRoute;
+final class PrivacySettingRoute extends SettingsRoute {
+  const PrivacySettingRoute();
+}
 
-final class const SupportRoute() extends SettingsRoute;
+final class SupportRoute extends SettingsRoute {
+  const SupportRoute();
+}

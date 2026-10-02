@@ -33,16 +33,16 @@ class AppearanceSettingsRemoteDatasource {
     }
   }
 
-  /// Streams real-time appearance settings updates from the Serverpod backend.
+  /// Streams real-time appearance settings updates from the Serverpod backend streaming connection.
   Stream<UserAppearanceSettings> streamSettings() async* {
     try {
-      await for (final message in _client.listenToControlStream()) {
+      await for (final message in _client.streaming.stream) {
         if (message is UserAppearanceSettings) {
           yield message;
         }
       }
     } catch (_) {
-      // Return empty stream if streaming fails
+      // Return empty stream if streaming fails or disconnects
     }
   }
 }
